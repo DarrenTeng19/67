@@ -14,19 +14,46 @@ package com.example._7.battle;
 import com.example._7.character.Combatant;
 
 public class BattleEngine {
-    private Combatant player;
-    private Combatant enemy;
-    private BattleState state;
+    private final Combatant player;
+    private final Combatant enemy;
+
+    private boolean battleStarted;
+    private boolean battleEnded;
+
+    // Constructor
+    public BattleEngine(Combatant player, Combatant enemy) {
+        this.player = player;
+        this.enemy = enemy;
+        this.battleStarted = false;
+        this.battleEnded = false;
+    }
+
+    // Methods
+    public void startBattle() {
+        player.getBattleState().resetFrom(player.getCharacterStats());
+        enemy.getBattleState().resetFrom(enemy.getCharacterStats());
+
+        // 之後補:
+        // initializeItemRuntimeStates(player);
+        // initializeItemRuntimeStates(enemy);
+
+        this.battleStarted = true;
+        this.battleEnded = false;
+    }
 
     public void update(double deltaTime) {
+        if (!battleStarted || battleEnded) {
+            return;
+        }
+
         regenerateResources(player, deltaTime);
         regenerateResources(enemy, deltaTime);
 
         updateStatusEffects(player, deltaTime);
         updateStatusEffects(enemy, deltaTime);
 
-        processItems(player, enemy, deltaTime);
-        processItems(enemy, player, deltaTime);
+        triggerItems(player, enemy, deltaTime);
+        triggerItems(enemy, player, deltaTime);
 
         checkBattleEnd();
     }

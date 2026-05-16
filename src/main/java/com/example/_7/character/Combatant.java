@@ -5,9 +5,17 @@ package com.example._7.character;
 *
 * */
 
+import com.example._7.battle.BattleState;
+import com.example._7.inventory.Backpack;
+
 public interface Combatant {
     String getName();
-    BattleStats getBattleStats();
+
+    CharacterStats getCharacterStats();
+
+    BattleState getBattleState();
+
     Backpack getBackpack();
+
     boolean isDead();
 }
