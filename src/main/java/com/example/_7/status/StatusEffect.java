@@ -1,4 +1,4 @@
-package com.example._7.effect;
+package com.example._7.status;
 
 public class StatusEffect {
 }
