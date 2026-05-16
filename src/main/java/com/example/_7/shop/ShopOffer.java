@@ -7,6 +7,23 @@ import com.example._7.item.Item;
 * */
 
 public class ShopOffer {
-    private Item item;
+    private final Item item;
     private boolean sold;
+
+    public ShopOffer(Item item) {
+        this.item = item;
+        this.sold = false;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public boolean isSold() {
+        return sold;
+    }
+
+    public void markAsSold() {
+        this.sold = true;
+    }
 }
