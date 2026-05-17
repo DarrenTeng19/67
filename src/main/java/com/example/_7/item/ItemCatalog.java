@@ -14,14 +14,14 @@ public class ItemCatalog {
     public ItemCatalog() {
         this.allItems = List.of(
                 // 物品建立樣板
-                createBanana(),
+                /*createBanana(),
                 createWoodenSword(),
                 createShortBow(),
                 createBroom(),
                 createMagicStone(),
                 createIronSword(),
                 createDeadlyDagger(),
-                createBurningBroom()
+                createBurningBroom()*/
         );
     }
 

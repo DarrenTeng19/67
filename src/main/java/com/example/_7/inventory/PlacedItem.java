@@ -22,7 +22,15 @@ public class PlacedItem {
         return position;
     }
 
-    public void RotateClockwise() {
+    public Rotation getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(Rotation rotation) {
+        this.rotation = rotation;
+    }
+
+    public void rotateClockwise() {
         this.rotation = rotation.nextClockwise();
     }
 

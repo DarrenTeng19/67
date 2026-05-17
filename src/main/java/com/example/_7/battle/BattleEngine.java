@@ -46,7 +46,7 @@ public class BattleEngine {
             return;
         }
 
-        regenerateResources(player, deltaTime);
+        /*regenerateResources(player, deltaTime);
         regenerateResources(enemy, deltaTime);
 
         updateStatusEffects(player, deltaTime);
@@ -55,6 +55,6 @@ public class BattleEngine {
         triggerItems(player, enemy, deltaTime);
         triggerItems(enemy, player, deltaTime);
 
-        checkBattleEnd();
+        checkBattleEnd();*/
     }
 }
