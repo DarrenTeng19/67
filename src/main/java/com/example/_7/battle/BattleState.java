@@ -4,6 +4,7 @@ import com.example._7.character.CharacterStats;
 import com.example._7.status.Buff;
 import com.example._7.status.Debuff;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BattleState {
@@ -12,34 +13,31 @@ public class BattleState {
     private int currentMana;
     private int currentShield;
 
-    private List<Buff> buffs;
-    private List<Debuff> debuffs;
+    private final List<Buff> buffs;
+    private final List<Debuff> debuffs;
 
-    // Constructor: 先將所有數值設為 0 透過 resetFrom 將角色最大數值填入
     public BattleState() {
         this.currentHp = 0;
         this.currentStamina = 0;
         this.currentMana = 0;
         this.currentShield = 0;
+        this.buffs = new ArrayList<>();
+        this.debuffs = new ArrayList<>();
     }
 
-    // Methods
     public void resetFrom(CharacterStats characterStats) {
         this.currentHp = characterStats.getMaxHp();
         this.currentStamina = characterStats.getMaxStamina();
         this.currentMana = characterStats.getMaxMana();
         this.currentShield = 0;
-
-        // 之後有 buff, debuff 的狀態
-        // this.buffs.clear();
-        // this.buffs.clear();
+        this.buffs.clear();
+        this.debuffs.clear();
     }
 
-    public boolean isDead(){
+    public boolean isDead() {
         return currentHp <= 0;
     }
 
-    // getters
     public int getCurrentHp() {
         return currentHp;
     }
@@ -55,6 +53,66 @@ public class BattleState {
     public int getCurrentShield() {
         return currentShield;
     }
-    // setters
 
+    public List<Buff> getBuffs() {
+        return List.copyOf(buffs);
+    }
+
+    public List<Debuff> getDebuffs() {
+        return List.copyOf(debuffs);
+    }
+
+    public void takeDamage(int damage) {
+        if (damage <= 0) return;
+
+        int remainingDamage = damage;
+
+        if (currentShield > 0) {
+            int blocked = Math.min(currentShield, remainingDamage);
+            currentShield -= blocked;
+            remainingDamage -= blocked;
+        }
+
+        if (remainingDamage > 0) {
+            currentHp = Math.max(0, currentHp - remainingDamage);
+        }
+    }
+
+    public void heal(int amount, int maxHp) {
+        if (amount <= 0) return;
+        currentHp = Math.min(maxHp, currentHp + amount);
+    }
+
+    public void addShield(int amount) {
+        if (amount <= 0) return;
+        currentShield += amount;
+    }
+
+    public void recoverStamina(int amount, int maxStamina) {
+        if (amount <= 0) return;
+        currentStamina = Math.min(maxStamina, currentStamina + amount);
+    }
+
+    public void recoverMana(int amount, int maxMana) {
+        if (amount <= 0) return;
+        currentMana = Math.min(maxMana, currentMana + amount);
+    }
+
+    public boolean hasEnoughStamina(int cost) {
+        return currentStamina >= cost;
+    }
+
+    public boolean hasEnoughMana(int cost) {
+        return currentMana >= cost;
+    }
+
+    public void useStamina(int amount) {
+        if (amount <= 0) return;
+        currentStamina = Math.max(0, currentStamina - amount);
+    }
+
+    public void useMana(int amount) {
+        if (amount <= 0) return;
+        currentMana = Math.max(0, currentMana - amount);
+    }
 }
