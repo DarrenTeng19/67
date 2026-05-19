@@ -1,5 +1,6 @@
 package com.example._7.inventory;
 
+import com.example._7.item.Item;
 import com.example._7.item.shape.GridOffset;
 import com.example._7.item.shape.ItemShape;
 
@@ -159,4 +160,42 @@ public class Backpack {
                 && position.col() < cols;
     }
 
+    public boolean tryMoveItem(PlacedItem placedItem, GridPosition newPosition) {
+        if (placedItem == null || newPosition == null) {
+            return false;
+        }
+
+        if (!placedItems.contains(placedItem)) {
+            return false;
+        }
+
+        GridPosition originalPosition = placedItem.getPosition();
+
+        placedItem.setPosition(newPosition);
+
+        if (canPlace(placedItem, placedItem)) {
+            return true;
+        }
+
+        placedItem.setPosition(originalPosition);
+        return false;
+    }
+
+    public boolean removeItem(PlacedItem placedItem) {
+        if (placedItem == null) {
+            return false;
+        }
+        return placedItems.remove(placedItem);
+    }
+
+    // 讓 BattleEngine 可以呼叫 取得背包中的物品名單
+    public List<Item> getBattleItems() {
+        List<Item> battleItems = new ArrayList<>();
+
+        for (PlacedItem placedItem : placedItems) {
+            battleItems.add(placedItem.getItem());
+        }
+
+        return List.copyOf(battleItems);
+    }
 }
