@@ -1,9 +1,9 @@
 package com.example._7.item.effect;
 
-public class HealEffect implements ItemEffect {
+public class AddMaxManaEffect implements ItemEffect {
     private final int amount;
 
-    public HealEffect(int amount) {
+    public AddMaxManaEffect(int amount) {
         this.amount = amount;
     }
 
@@ -13,12 +13,12 @@ public class HealEffect implements ItemEffect {
 
     @Override
     public void apply(EffectContext context) {
-        if (!context.isActiveTrigger()) return;
-        context.healOwner(amount);
+        if (!context.isPassiveSetup()) return;
+        context.addOwnerMaxMana(amount);
     }
 
     @Override
     public String getDescription() {
-        return "回復 " + amount + " HP";
+        return "最大魔力 +" + amount;
     }
 }

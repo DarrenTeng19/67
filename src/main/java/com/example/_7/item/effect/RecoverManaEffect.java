@@ -1,9 +1,9 @@
 package com.example._7.item.effect;
 
-public class HealEffect implements ItemEffect {
+public class RecoverManaEffect implements ItemEffect {
     private final int amount;
 
-    public HealEffect(int amount) {
+    public RecoverManaEffect(int amount) {
         this.amount = amount;
     }
 
@@ -14,11 +14,11 @@ public class HealEffect implements ItemEffect {
     @Override
     public void apply(EffectContext context) {
         if (!context.isActiveTrigger()) return;
-        context.healOwner(amount);
+        context.recoverOwnerMana(amount);
     }
 
     @Override
     public String getDescription() {
-        return "回復 " + amount + " HP";
+        return "回復 " + amount + " 魔力";
     }
 }
