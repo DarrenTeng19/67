@@ -22,11 +22,20 @@ public class PlacedItem {
         return position;
     }
 
-    public void RotateClockwise() {
+    public void rotateClockwise() {
         this.rotation = rotation.nextClockwise();
     }
 
     public ItemShape getCurrentShape() {
         return item.getShape().rotated(rotation);
+    }
+
+    // 物品當前的旋轉角度
+    public Rotation getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(Rotation rotation) {
+        this.rotation = rotation;
     }
 }
