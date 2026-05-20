@@ -9,6 +9,12 @@ public class PlacedItem {
     private Rotation rotation;
 
     public PlacedItem(Item item, GridPosition position) {
+        if (item == null) {
+            throw new IllegalArgumentException("item 不能是 null");
+        }
+        if (position == null) {
+            throw new IllegalArgumentException("position 不能是 null");
+        }
         this.item = item;
         this.position = position;
         this.rotation = Rotation.DEGREE_0;
@@ -22,11 +28,30 @@ public class PlacedItem {
         return position;
     }
 
-    public void RotateClockwise() {
+    public void setPosition(GridPosition position) {
+        if (position == null) {
+            throw new IllegalArgumentException("position 不能是 null");
+        }
+        this.position = position;
+    }
+
+    public void rotateClockwise() {
         this.rotation = rotation.nextClockwise();
     }
 
     public ItemShape getCurrentShape() {
         return item.getShape().rotated(rotation);
+    }
+
+    // 物品當前的旋轉角度
+    public Rotation getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(Rotation rotation) {
+        if (rotation == null) {
+            throw new IllegalArgumentException("rotation 不能是 null");
+        }
+        this.rotation = rotation;
     }
 }
