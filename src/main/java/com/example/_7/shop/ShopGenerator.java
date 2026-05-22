@@ -1,5 +1,9 @@
 package com.example._7.shop;
 
+/*
+ * 關卡間商店內容物的生成
+ */
+
 import com.example._7.character.CharacterClass;
 import com.example._7.item.Item;
 import com.example._7.item.ItemAffinity;
@@ -31,10 +35,8 @@ public class ShopGenerator {
     public Shop generateShop(CharacterClass characterClass, int round) {
         List<Item> itemPool = getAvailableItems(characterClass, round);
 
-        // 仍然保留防禦性檢查（不會 throw），但確保至少有一個 item
-        if (itemPool == null || itemPool.isEmpty()) {
-            // 不應該到這裡，getAvailableItems 已處理 fallback，但保險起見再補一個
-            itemPool = List.of(createPlaceholderItem());
+        if (itemPool.isEmpty()) {
+            throw new IllegalStateException("商店商品池不能為空");
         }
 
         List<ShopOffer> offers = new ArrayList<>();
@@ -43,6 +45,7 @@ public class ShopGenerator {
             Item randomItem = itemPool.get(random.nextInt(itemPool.size()));
             offers.add(new ShopOffer(randomItem));
         }
+
         return new Shop(offers);
     }
 

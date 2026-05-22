@@ -1,4 +1,4 @@
 package com.example._7.inventory;
 
-public class GridPosition {
+public record GridPosition(int row, int col) {
 }

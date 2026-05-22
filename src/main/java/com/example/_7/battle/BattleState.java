@@ -18,10 +18,10 @@ public class BattleState {
     private int maxStamina;
     private int maxMana;
 
-    private List<Buff> buffs;
-    private List<Debuff> debuffs;
-
     // Constructor: 先將所有數值設為 0，透過 resetFrom 將角色最大數值填入
+    private final List<Buff> buffs;
+    private final List<Debuff> debuffs;
+
     public BattleState() {
         this.currentHp = 0;
         this.currentStamina = 0;
@@ -89,29 +89,65 @@ public class BattleState {
         return currentShield;
     }
 
-    public void setCurrentShield(int shield) {
-        this.currentShield = shield;
-    }
-
-    // max getters（新增，解決 UI 呼叫 getMaxHp() 的問題）
-    public int getMaxHp() {
-        return maxHp;
-    }
-
-    public int getMaxStamina() {
-        return maxStamina;
-    }
-
-    public int getMaxMana() {
-        return maxMana;
-    }
-
-    // buffs / debuffs 存取（簡單方法）
     public List<Buff> getBuffs() {
-        return buffs;
+        return List.copyOf(buffs);
     }
 
     public List<Debuff> getDebuffs() {
-        return debuffs;
+        return List.copyOf(debuffs);
+    }
+
+    public void takeDamage(int damage) {
+        if (damage <= 0) return;
+
+        int remainingDamage = damage;
+
+        if (currentShield > 0) {
+            int blocked = Math.min(currentShield, remainingDamage);
+            currentShield -= blocked;
+            remainingDamage -= blocked;
+        }
+
+        if (remainingDamage > 0) {
+            currentHp = Math.max(0, currentHp - remainingDamage);
+        }
+    }
+
+    public void heal(int amount, int maxHp) {
+        if (amount <= 0) return;
+        currentHp = Math.min(maxHp, currentHp + amount);
+    }
+
+    public void addShield(int amount) {
+        if (amount <= 0) return;
+        currentShield += amount;
+    }
+
+    public void recoverStamina(int amount, int maxStamina) {
+        if (amount <= 0) return;
+        currentStamina = Math.min(maxStamina, currentStamina + amount);
+    }
+
+    public void recoverMana(int amount, int maxMana) {
+        if (amount <= 0) return;
+        currentMana = Math.min(maxMana, currentMana + amount);
+    }
+
+    public boolean hasEnoughStamina(int cost) {
+        return currentStamina >= cost;
+    }
+
+    public boolean hasEnoughMana(int cost) {
+        return currentMana >= cost;
+    }
+
+    public void useStamina(int amount) {
+        if (amount <= 0) return;
+        currentStamina = Math.max(0, currentStamina - amount);
+    }
+
+    public void useMana(int amount) {
+        if (amount <= 0) return;
+        currentMana = Math.max(0, currentMana - amount);
     }
 }

@@ -38,6 +38,7 @@ public abstract class Item {
     private final int staminaCost;
     private final int manaCost;
 
+    private final String description; // 給 UI 顯示用的自訂描述，可留空
     private final List<ItemEffect> effects; // 給程式執行效果用的
 
     protected Item(
@@ -68,6 +69,7 @@ public abstract class Item {
         this.hitRate = hitRate;
         this.staminaCost = staminaCost;
         this.manaCost = manaCost;
+        this.description = description == null ? "" : description;
         this.effects = List.copyOf(effects);
     }
 
@@ -89,6 +91,10 @@ public abstract class Item {
 
     public ItemAffinity getAffinity(){
         return affinity;
+    }
+
+    public Set<ItemRole> getRoles() {
+        return Set.copyOf(roles);
     }
 
     public ItemShape getShape() {
@@ -136,8 +142,12 @@ public abstract class Item {
     }
 
     public String getDescription() {
+        if (!description.isBlank()) {
+            return description;
+        }
+
         return effects.stream()
                 .map(ItemEffect::getDescription)
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining("，"));
     }
 }
