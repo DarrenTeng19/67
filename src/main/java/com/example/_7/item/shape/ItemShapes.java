@@ -5,7 +5,9 @@ import java.util.List;
 
 /*
  * 用來方便建立 ItemShape 的工具類別
- */
+ * utility class / factory class
+ * 跟 ItemShape 不是同一個東西
+ * */
 public final class ItemShapes {
     private ItemShapes() {
     }

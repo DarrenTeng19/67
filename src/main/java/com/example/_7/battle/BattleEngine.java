@@ -150,7 +150,7 @@ public class BattleEngine {
             return;
         }
 
-        regenerateResources(player, deltaTime);
+        /*regenerateResources(player, deltaTime);
         regenerateResources(enemy, deltaTime);
 
         updateStatusEffects(player, deltaTime);
@@ -162,7 +162,7 @@ public class BattleEngine {
 
         triggerItems(enemy, player, deltaTime);
 
-        checkBattleEnd();
+        checkBattleEnd();*/
     }
 
     private void initializeItemRuntimeStates(Combatant combatant) {

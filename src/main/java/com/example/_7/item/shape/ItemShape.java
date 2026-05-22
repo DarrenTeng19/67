@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
-* 某個物件的形狀資料
-* 代表一個 item 實際佔了哪些格子
-* */
+ * 某個物件的形狀資料
+ * 代表一個 item 實際佔了哪些格子
+ * */
 public record ItemShape(int width, int height, List<GridOffset> occupiedCells) {
     public ItemShape {
         if (width <= 0 || height <= 0) {
@@ -27,7 +28,7 @@ public record ItemShape(int width, int height, List<GridOffset> occupiedCells) {
 
         for (GridOffset cell : occupiedCells) {
             if (cell.row() < 0 || cell.row() >= height
-            || cell.col() < 0 || cell.col() >= width) {
+                    || cell.col() < 0 || cell.col() >= width) {
                 throw new IllegalArgumentException("Occupied cell is out of shape bounds.");
             }
 

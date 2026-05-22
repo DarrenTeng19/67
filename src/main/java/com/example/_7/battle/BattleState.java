@@ -13,6 +13,12 @@ public class BattleState {
     private int currentMana;
     private int currentShield;
 
+    // 儲存最大值，供 UI 或其他邏輯查詢
+    private int maxHp;
+    private int maxStamina;
+    private int maxMana;
+
+    // Constructor: 先將所有數值設為 0，透過 resetFrom 將角色最大數值填入
     private final List<Buff> buffs;
     private final List<Debuff> debuffs;
 
@@ -21,15 +27,31 @@ public class BattleState {
         this.currentStamina = 0;
         this.currentMana = 0;
         this.currentShield = 0;
+
+        this.maxHp = 0;
+        this.maxStamina = 0;
+        this.maxMana = 0;
+
         this.buffs = new ArrayList<>();
         this.debuffs = new ArrayList<>();
     }
 
+    /**
+     * 根據角色屬性初始化戰鬥狀態（設定最大值與當前值）
+     */
     public void resetFrom(CharacterStats characterStats) {
-        this.currentHp = characterStats.getMaxHp();
-        this.currentStamina = characterStats.getMaxStamina();
-        this.currentMana = characterStats.getMaxMana();
+        if (characterStats == null) return;
+
+        this.maxHp = characterStats.getMaxHp();
+        this.maxStamina = characterStats.getMaxStamina();
+        this.maxMana = characterStats.getMaxMana();
+
+        this.currentHp = this.maxHp;
+        this.currentStamina = this.maxStamina;
+        this.currentMana = this.maxMana;
         this.currentShield = 0;
+
+        // 清空/初始化狀態效果列表
         this.buffs.clear();
         this.debuffs.clear();
     }
@@ -38,16 +60,29 @@ public class BattleState {
         return currentHp <= 0;
     }
 
+    // current getters / setters
     public int getCurrentHp() {
         return currentHp;
+    }
+
+    public void setCurrentHp(int hp) {
+        this.currentHp = Math.max(hp, Integer.MIN_VALUE); // 可依需求加上上限/下限檢查
     }
 
     public int getCurrentStamina() {
         return currentStamina;
     }
 
+    public void setCurrentStamina(int stamina) {
+        this.currentStamina = stamina;
+    }
+
     public int getCurrentMana() {
         return currentMana;
+    }
+
+    public void setCurrentMana(int mana) {
+        this.currentMana = mana;
     }
 
     public int getCurrentShield() {
