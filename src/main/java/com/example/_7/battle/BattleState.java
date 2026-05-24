@@ -89,6 +89,19 @@ public class BattleState {
         return currentShield;
     }
 
+
+    public int getMaxHp() {
+        return maxHp;
+    }
+
+    public int getMaxStamina() {
+        return maxStamina;
+    }
+
+    public int getMaxMana() {
+        return maxMana;
+    }
+
     public List<Buff> getBuffs() {
         return List.copyOf(buffs);
     }

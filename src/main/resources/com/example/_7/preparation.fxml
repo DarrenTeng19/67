@@ -6,36 +6,34 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0"
+<AnchorPane prefHeight="650.0" prefWidth="1000.0"
             xmlns="http://javafx.com/javafx/11.0.2"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example._7.ui.screen.PreparationScreenController">
     <children>
-        <VBox layoutX="10.0" layoutY="10.0" spacing="8.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+        <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
             <children>
-                <!-- Character / Info row (container placeholders) -->
-                <HBox spacing="8.0">
-                    <children>
-                        <AnchorPane fx:id="charInfoContainer" prefWidth="200.0" />
-                        <AnchorPane fx:id="healthBarContainer" prefWidth="200.0" />
-                    </children>
-                </HBox>
-
-                <!-- Main content: Shop + Backpack + ItemCard (containers) -->
                 <HBox spacing="12.0">
                     <children>
-                        <AnchorPane fx:id="shopPanelContainer" prefWidth="200.0" />
-                        <AnchorPane fx:id="backpackContainer" prefWidth="200.0" />
-                        <AnchorPane fx:id="itemCardContainer" prefWidth="200.0" />
+                        <AnchorPane fx:id="charInfoContainer" prefWidth="240.0" prefHeight="100.0" />
+                        <AnchorPane fx:id="healthBarContainer" prefWidth="240.0" prefHeight="100.0" />
                     </children>
                 </HBox>
 
-                <!-- Controls -->
+                <HBox spacing="12.0" VBox.vgrow="ALWAYS">
+                    <children>
+                        <AnchorPane fx:id="shopPanelContainer" prefWidth="230.0" prefHeight="440.0" />
+                        <AnchorPane fx:id="storageContainer" prefWidth="260.0" prefHeight="440.0" />
+                        <AnchorPane fx:id="backpackContainer" prefWidth="320.0" prefHeight="440.0" />
+                        <AnchorPane fx:id="itemCardContainer" prefWidth="270.0" prefHeight="440.0" />
+                    </children>
+                </HBox>
+
                 <HBox spacing="8.0">
                     <children>
                         <Button fx:id="btnStartBattle" text="Start Battle" onAction="#onStartBattle"/>
-                        <Button fx:id="btnRefreshShop" text="Refresh Shop" onAction="#onRefreshShop"/>
-                        <Button fx:id="btnOpenStorage" text="Storage" onAction="#onOpenStorage"/>
+                        <Button fx:id="btnRefreshShop" text="Refresh Shop ($1)" onAction="#onRefreshShop"/>
+                        <Button fx:id="btnOpenStorage" text="Storage Help" onAction="#onOpenStorage"/>
                     </children>
                 </HBox>
             </children>
