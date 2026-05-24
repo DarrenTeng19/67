@@ -87,12 +87,30 @@ public class Backpack {
     }
 
     public boolean tryRotateItem(PlacedItem placedItem) {
-        if (placedItem == null || !placedItems.contains(placedItem)) {
+        return tryRotateItemClockwise(placedItem);
+    }
+
+    public boolean tryRotateItemClockwise(PlacedItem placedItem) {
+        if (placedItem == null) {
+            return false;
+        }
+        return tryRotateItemTo(placedItem, placedItem.getRotation().nextClockwise());
+    }
+
+    public boolean tryRotateItemCounterClockwise(PlacedItem placedItem) {
+        if (placedItem == null) {
+            return false;
+        }
+        return tryRotateItemTo(placedItem, placedItem.getRotation().nextCounterClockwise());
+    }
+
+    public boolean tryRotateItemTo(PlacedItem placedItem, Rotation newRotation) {
+        if (placedItem == null || newRotation == null || !placedItems.contains(placedItem)) {
             return false;
         }
 
         Rotation originalRotation = placedItem.getRotation();
-        placedItem.rotateClockwise();
+        placedItem.setRotation(newRotation);
 
         if (canPlace(placedItem, placedItem)) {
             return true;

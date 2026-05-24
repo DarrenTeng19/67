@@ -8,6 +8,7 @@ import com.example._7.game.RoundManager;
 import com.example._7.inventory.Backpack;
 import com.example._7.inventory.GridPosition;
 import com.example._7.inventory.PlacedItem;
+import com.example._7.inventory.Rotation;
 import com.example._7.inventory.Storage;
 import com.example._7.item.Item;
 import com.example._7.shop.Shop;
@@ -55,6 +56,7 @@ public class PreparationScreenController {
     private RecycleBinView recycleBinView;
 
     private Item draggedStorageItem;
+    private Rotation draggedStorageRotation = Rotation.DEGREE_0;
     private PlacedItem selectedPlacedItem;
     private Item selectedStorageItem;
 
@@ -115,24 +117,39 @@ public class PreparationScreenController {
             selectedStorageItem = item;
             selectedPlacedItem = null;
             itemCard.setItem(item);
-            itemCard.setMessage("可按「自動放入背包」，或拖曳到背包格子。");
+            itemCard.setMessage("可按「自動放入背包」，或拖曳到背包格子。按住/選取時可用 Q / R 旋轉。");
             if (backpackView != null) backpackView.clearSelection();
         });
 
         storageView.setOnAutoPlaceRequested(this::autoPlaceStorageItem);
         storageView.setOnSellRequested(this::sellStorageItem);
-        storageView.setOnDragStarted(item -> draggedStorageItem = item);
-        storageView.setOnDragDone(() -> draggedStorageItem = null);
+        storageView.setOnRotationChanged(rotation -> {
+            draggedStorageRotation = rotation == null ? Rotation.DEGREE_0 : rotation;
+            if (selectedStorageItem != null) {
+                showMessage("「" + selectedStorageItem.getName() + "」目前旋轉角度：" + draggedStorageRotation.getDisplayName());
+            }
+        });
+        storageView.setOnDragStarted(item -> {
+            draggedStorageItem = item;
+            draggedStorageRotation = storageView.getCurrentDragRotation();
+        });
+        storageView.setOnDragDone(() -> {
+            draggedStorageItem = null;
+            draggedStorageRotation = Rotation.DEGREE_0;
+        });
 
         backpackView.setDraggedStorageItemSupplier(() -> draggedStorageItem);
+        backpackView.setDraggedStorageRotationSupplier(() -> draggedStorageRotation);
         backpackView.setOnStorageItemDropped(this::placeStorageItemAt);
         backpackView.setOnPlacedItemMoved(this::movePlacedItemTo);
+        backpackView.setOnPlacedItemRotationRequested(this::rotatePlacedItem);
+        backpackView.setOnDraggedStorageItemRotationRequested(this::rotateDraggedStorageItem);
         backpackView.setOnPlacedItemSelected(placedItem -> {
             selectedPlacedItem = placedItem;
             selectedStorageItem = null;
             if (placedItem != null) {
                 itemCard.setItem(placedItem.getItem());
-                itemCard.setMessage("背包物品可拖曳移動，也可用回收箱賣出。");
+                itemCard.setMessage("背包物品可拖曳移動；按住/選取時按 R 順時針旋轉、Q 逆時針旋轉，也可用回收箱賣出。");
             } else {
                 itemCard.clear();
                 itemCard.setMessage("");
@@ -204,14 +221,34 @@ public class PreparationScreenController {
     private void autoPlaceStorageItem(Item item) {
         if (item == null) return;
         Backpack backpack = session.getPlayer().getBackpack();
-        backpack.findFirstAvailablePosition(item).ifPresentOrElse(
-                position -> placeStorageItemAt(item, position),
-                () -> showMessage("背包沒有足夠空間放入「" + item.getName() + "」。")
-        );
+
+        // 自動放入時會先嘗試目前儲物箱選定的旋轉角度；失敗再嘗試原始角度。
+        for (int row = 0; row < backpack.getRows(); row++) {
+            for (int col = 0; col < backpack.getCols(); col++) {
+                GridPosition position = new GridPosition(row, col);
+                if (placeStorageItemAt(item, position, draggedStorageRotation)) {
+                    return;
+                }
+            }
+        }
+
+        if (draggedStorageRotation != Rotation.DEGREE_0) {
+            for (int row = 0; row < backpack.getRows(); row++) {
+                for (int col = 0; col < backpack.getCols(); col++) {
+                    GridPosition position = new GridPosition(row, col);
+                    if (placeStorageItemAt(item, position, Rotation.DEGREE_0)) {
+                        return;
+                    }
+                }
+            }
+        }
+
+        showMessage("背包沒有足夠空間放入「" + item.getName() + "」。");
     }
 
-    private boolean placeStorageItemAt(Item item, GridPosition position) {
+    private boolean placeStorageItemAt(Item item, GridPosition position, Rotation rotation) {
         if (item == null || position == null) return false;
+        if (rotation == null) rotation = Rotation.DEGREE_0;
 
         Player player = session.getPlayer();
         Storage storage = player.getStorage();
@@ -223,16 +260,19 @@ public class PreparationScreenController {
         }
 
         PlacedItem placedItem = new PlacedItem(item, position);
+        placedItem.setRotation(rotation);
         if (!backpack.tryPlaceItem(placedItem)) {
-            showMessage("這個位置放不下「" + item.getName() + "」。");
+            showMessage("這個位置放不下「" + item.getName() + "」；目前旋轉角度：" + rotation.getDisplayName());
             return false;
         }
 
         storage.removeItem(item);
         selectedPlacedItem = placedItem;
         selectedStorageItem = null;
+        draggedStorageRotation = Rotation.DEGREE_0;
+        if (storageView != null) storageView.resetDragRotation();
         itemCard.setItem(item);
-        showMessage("已將「" + item.getName() + "」放入背包。");
+        showMessage("已將「" + item.getName() + "」以 " + rotation.getDisplayName() + " 放入背包。");
         refreshUI();
         return true;
     }
@@ -247,6 +287,39 @@ public class PreparationScreenController {
         } else {
             showMessage("這個位置放不下「" + placedItem.getItem().getName() + "」。");
         }
+        refreshUI();
+        return success;
+    }
+
+    private void rotateDraggedStorageItem(boolean clockwise) {
+        draggedStorageRotation = clockwise
+                ? draggedStorageRotation.nextClockwise()
+                : draggedStorageRotation.nextCounterClockwise();
+
+        if (draggedStorageItem != null) {
+            showMessage("「" + draggedStorageItem.getName() + "」目前旋轉角度：" + draggedStorageRotation.getDisplayName());
+        } else {
+            showMessage("目前旋轉角度：" + draggedStorageRotation.getDisplayName());
+        }
+    }
+
+    private boolean rotatePlacedItem(PlacedItem placedItem, boolean clockwise) {
+        if (placedItem == null) return false;
+
+        Backpack backpack = session.getPlayer().getBackpack();
+        boolean success = clockwise
+                ? backpack.tryRotateItemClockwise(placedItem)
+                : backpack.tryRotateItemCounterClockwise(placedItem);
+
+        selectedPlacedItem = placedItem;
+        itemCard.setItem(placedItem.getItem());
+
+        if (success) {
+            showMessage("已旋轉「" + placedItem.getItem().getName() + "」到 " + placedItem.getRotation().getDisplayName() + "。");
+        } else {
+            showMessage("「" + placedItem.getItem().getName() + "」旋轉後會超出背包或重疊，因此無法旋轉。");
+        }
+
         refreshUI();
         return success;
     }

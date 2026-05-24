@@ -39,6 +39,10 @@ public class PlacedItem {
         this.rotation = rotation.nextClockwise();
     }
 
+    public void rotateCounterClockwise() {
+        this.rotation = rotation.nextCounterClockwise();
+    }
+
     public ItemShape getCurrentShape() {
         return item.getShape().rotated(rotation);
     }
