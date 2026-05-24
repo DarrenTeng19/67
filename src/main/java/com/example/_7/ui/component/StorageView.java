@@ -2,6 +2,7 @@ package com.example._7.ui.component;
 
 import com.example._7.inventory.Rotation;
 import com.example._7.inventory.Storage;
+import com.example._7.inventory.PlacedItem;
 import com.example._7.item.Item;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -19,6 +20,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class StorageView extends VBox {
     private final ListView<Item> list = new ListView<>(FXCollections.observableArrayList());
@@ -32,6 +35,8 @@ public class StorageView extends VBox {
     private Consumer<Item> onDragStarted;
     private Runnable onDragDone;
     private Consumer<Rotation> onRotationChanged;
+    private Supplier<PlacedItem> draggedBackpackItemSupplier;
+    private Function<PlacedItem, Boolean> onBackpackItemDropped;
 
     private Item heldItem;
     private Rotation currentDragRotation = Rotation.DEGREE_0;
@@ -69,9 +74,12 @@ public class StorageView extends VBox {
         });
 
         list.setOnDragDone(event -> {
-            finishDrag();
+            finishDrag(event.getTransferMode() != null);
             event.consume();
         });
+
+        setupBackpackDropTarget(this);
+        setupBackpackDropTarget(list);
 
         btnAutoPlace.setMaxWidth(Double.MAX_VALUE);
         btnAutoPlace.setOnAction(event -> {
@@ -94,7 +102,7 @@ public class StorageView extends VBox {
                 list,
                 rotationHint,
                 buttons,
-                new Label("提示：拖曳儲物箱物品到背包；按住/選取物品時按 R 順時針旋轉、Q 逆時針旋轉。")
+                new Label("提示：拖曳儲物箱物品到背包；也可把背包物品拖回儲物箱。按住/選取物品時按 R/Q 旋轉。")
         );
     }
 
@@ -123,9 +131,24 @@ public class StorageView extends VBox {
     }
 
     public void resetDragRotation() {
-        currentDragRotation = Rotation.DEGREE_0;
+        setCurrentDragRotation(Rotation.DEGREE_0, true);
+    }
+
+    public void setCurrentDragRotation(Rotation rotation) {
+        setCurrentDragRotation(rotation, true);
+    }
+
+    public void rotateCurrentDragRotation(boolean clockwise) {
+        Rotation next = clockwise
+                ? currentDragRotation.nextClockwise()
+                : currentDragRotation.nextCounterClockwise();
+        setCurrentDragRotation(next, true);
+    }
+
+    private void setCurrentDragRotation(Rotation rotation, boolean notify) {
+        currentDragRotation = rotation == null ? Rotation.DEGREE_0 : rotation;
         updateRotationHint();
-        if (onRotationChanged != null) {
+        if (notify && onRotationChanged != null) {
             onRotationChanged.accept(currentDragRotation);
         }
     }
@@ -154,6 +177,14 @@ public class StorageView extends VBox {
         this.onRotationChanged = onRotationChanged;
     }
 
+    public void setDraggedBackpackItemSupplier(Supplier<PlacedItem> draggedBackpackItemSupplier) {
+        this.draggedBackpackItemSupplier = draggedBackpackItemSupplier;
+    }
+
+    public void setOnBackpackItemDropped(Function<PlacedItem, Boolean> onBackpackItemDropped) {
+        this.onBackpackItemDropped = onBackpackItemDropped;
+    }
+
     private void beginDrag(Item item, Node source) {
         if (item == null || source == null) {
             return;
@@ -173,9 +204,15 @@ public class StorageView extends VBox {
         }
     }
 
-    private void finishDrag() {
+    private void finishDrag(boolean dropSucceeded) {
         heldItem = null;
-        resetDragRotation();
+
+        // 如果拖曳成功，旋轉角度回到 0°，方便下一個物品從預設角度開始。
+        // 如果拖曳失敗，保留目前角度，讓玩家可以換位置再拖一次，不需要重新按 Q/R。
+        if (dropSucceeded) {
+            resetDragRotation();
+        }
+
         if (onDragDone != null) {
             onDragDone.run();
         }
@@ -191,15 +228,36 @@ public class StorageView extends VBox {
             return;
         }
 
-        currentDragRotation = event.getCode() == KeyCode.R
-                ? currentDragRotation.nextClockwise()
-                : currentDragRotation.nextCounterClockwise();
-
-        updateRotationHint();
-        if (onRotationChanged != null) {
-            onRotationChanged.accept(currentDragRotation);
-        }
+        rotateCurrentDragRotation(event.getCode() == KeyCode.R);
         event.consume();
+    }
+
+
+    private void setupBackpackDropTarget(Node target) {
+        if (target == null) {
+            return;
+        }
+
+        target.setOnDragOver(event -> {
+            Dragboard dragboard = event.getDragboard();
+            if (dragboard.hasString() && dragboard.getString().startsWith("BACKPACK_ITEM:")) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        target.setOnDragDropped(event -> {
+            boolean success = false;
+            Dragboard dragboard = event.getDragboard();
+            if (dragboard.hasString() && dragboard.getString().startsWith("BACKPACK_ITEM:")) {
+                PlacedItem placedItem = draggedBackpackItemSupplier == null ? null : draggedBackpackItemSupplier.get();
+                if (placedItem != null && onBackpackItemDropped != null) {
+                    success = Boolean.TRUE.equals(onBackpackItemDropped.apply(placedItem));
+                }
+            }
+            event.setDropCompleted(success);
+            event.consume();
+        });
     }
 
     private void updateRotationHint() {
@@ -211,14 +269,22 @@ public class StorageView extends VBox {
             setOnMousePressed(event -> {
                 Item item = getItem();
                 if (item != null) {
+                    Item previouslySelected = getSelectedItem();
+                    boolean isSameSelectedItem = previouslySelected == item;
+
                     heldItem = item;
-                    currentDragRotation = Rotation.DEGREE_0;
-                    updateRotationHint();
+
+                    // 重要：如果玩家已經選取這個物品並按 Q/R 轉好角度，
+                    // 再按住同一個 cell 開始拖曳時，不可以把角度重設成 0°。
+                    // 否則像木劍 1x2 必須橫放時，拖曳一開始就會被重置成直放，導致放不進背包。
+                    if (!isSameSelectedItem) {
+                        setCurrentDragRotation(Rotation.DEGREE_0, true);
+                    } else {
+                        updateRotationHint();
+                    }
+
                     list.getSelectionModel().select(item);
                     list.requestFocus();
-                    if (onRotationChanged != null) {
-                        onRotationChanged.accept(currentDragRotation);
-                    }
                 }
                 // 不 consume，否則 ListView / Cell 可能無法產生 drag detected。
             });
@@ -239,9 +305,11 @@ public class StorageView extends VBox {
             });
 
             setOnDragDone(event -> {
-                finishDrag();
+                finishDrag(event.getTransferMode() != null);
                 event.consume();
             });
+
+            setupBackpackDropTarget(this);
         }
 
         @Override

@@ -11,6 +11,10 @@ import com.example._7.inventory.PlacedItem;
 import com.example._7.inventory.Rotation;
 import com.example._7.inventory.Storage;
 import com.example._7.item.Item;
+import com.example._7.item.ItemCatalog;
+import com.example._7.recipe.RecipeCatalog;
+import com.example._7.recipe.RecipeResult;
+import com.example._7.recipe.RecipeService;
 import com.example._7.shop.Shop;
 import com.example._7.shop.ShopOffer;
 import com.example._7.ui.component.BackpackGridView;
@@ -45,6 +49,7 @@ public class PreparationScreenController {
 
     @FXML private Button btnStartBattle;
     @FXML private Button btnRefreshShop;
+    @FXML private Button btnAutoCraft;
     @FXML private Button btnOpenStorage;
 
     private CharacterInfoPanel charInfo;
@@ -54,6 +59,7 @@ public class PreparationScreenController {
     private BackpackGridView backpackView;
     private ItemCardView itemCard;
     private RecycleBinView recycleBinView;
+    private final RecipeService recipeService = new RecipeService(new RecipeCatalog(), new ItemCatalog());
 
     private Item draggedStorageItem;
     private Rotation draggedStorageRotation = Rotation.DEGREE_0;
@@ -137,6 +143,8 @@ public class PreparationScreenController {
             draggedStorageItem = null;
             draggedStorageRotation = Rotation.DEGREE_0;
         });
+        storageView.setDraggedBackpackItemSupplier(() -> selectedPlacedItem);
+        storageView.setOnBackpackItemDropped(this::moveBackpackItemToStorage);
 
         backpackView.setDraggedStorageItemSupplier(() -> draggedStorageItem);
         backpackView.setDraggedStorageRotationSupplier(() -> draggedStorageRotation);
@@ -220,30 +228,55 @@ public class PreparationScreenController {
 
     private void autoPlaceStorageItem(Item item) {
         if (item == null) return;
-        Backpack backpack = session.getPlayer().getBackpack();
 
-        // 自動放入時會先嘗試目前儲物箱選定的旋轉角度；失敗再嘗試原始角度。
-        for (int row = 0; row < backpack.getRows(); row++) {
-            for (int col = 0; col < backpack.getCols(); col++) {
-                GridPosition position = new GridPosition(row, col);
-                if (placeStorageItemAt(item, position, draggedStorageRotation)) {
-                    return;
-                }
-            }
+        Player player = session.getPlayer();
+        Storage storage = player.getStorage();
+        Backpack backpack = player.getBackpack();
+
+        if (!storage.contains(item)) {
+            showMessage("儲物箱中找不到「" + item.getName() + "」。");
+            return;
         }
 
-        if (draggedStorageRotation != Rotation.DEGREE_0) {
+        // 自動放入時不要求玩家先轉到正確角度。
+        // 會依序嘗試目前角度、0°、90°、180°、270°，找到第一個可放位置就放入。
+        for (Rotation rotation : getAutoPlaceRotationOrder(draggedStorageRotation)) {
             for (int row = 0; row < backpack.getRows(); row++) {
                 for (int col = 0; col < backpack.getCols(); col++) {
                     GridPosition position = new GridPosition(row, col);
-                    if (placeStorageItemAt(item, position, Rotation.DEGREE_0)) {
+                    PlacedItem candidate = new PlacedItem(item, position);
+                    candidate.setRotation(rotation);
+
+                    if (backpack.tryPlaceItem(candidate)) {
+                        storage.removeItem(item);
+                        selectedPlacedItem = candidate;
+                        selectedStorageItem = null;
+                        draggedStorageRotation = Rotation.DEGREE_0;
+                        if (storageView != null) storageView.resetDragRotation();
+                        itemCard.setItem(item);
+                        showMessage("已自動將「" + item.getName() + "」以 "
+                                + rotation.getDisplayName()
+                                + " 放入背包。位置：第 " + (row + 1) + " 列，第 " + (col + 1) + " 欄。");
+                        refreshUI();
                         return;
                     }
                 }
             }
         }
 
-        showMessage("背包沒有足夠空間放入「" + item.getName() + "」。");
+        showMessage("背包沒有足夠空間放入「" + item.getName() + "」，即使旋轉後也放不下。");
+    }
+
+    private Rotation[] getAutoPlaceRotationOrder(Rotation preferredRotation) {
+        Rotation preferred = preferredRotation == null ? Rotation.DEGREE_0 : preferredRotation;
+        java.util.List<Rotation> ordered = new java.util.ArrayList<>();
+        ordered.add(preferred);
+        for (Rotation rotation : Rotation.values()) {
+            if (rotation != preferred) {
+                ordered.add(rotation);
+            }
+        }
+        return ordered.toArray(new Rotation[0]);
     }
 
     private boolean placeStorageItemAt(Item item, GridPosition position, Rotation rotation) {
@@ -289,6 +322,42 @@ public class PreparationScreenController {
         }
         refreshUI();
         return success;
+    }
+
+    private boolean moveBackpackItemToStorage(PlacedItem placedItem) {
+        if (placedItem == null) return false;
+
+        Player player = session.getPlayer();
+        Backpack backpack = player.getBackpack();
+        Storage storage = player.getStorage();
+        Item item = placedItem.getItem();
+        Rotation previousRotation = placedItem.getRotation();
+
+        if (!backpack.removeItem(placedItem)) {
+            showMessage("背包中找不到「" + item.getName() + "」。");
+            return false;
+        }
+
+        storage.addItem(item);
+        selectedPlacedItem = null;
+        selectedStorageItem = item;
+        draggedStorageItem = null;
+        draggedStorageRotation = previousRotation == null ? Rotation.DEGREE_0 : previousRotation;
+
+        if (storageView != null) {
+            storageView.setCurrentDragRotation(draggedStorageRotation);
+        }
+        if (backpackView != null) {
+            backpackView.clearSelection();
+        }
+        itemCard.setItem(item);
+        showMessage("已將「" + item.getName() + "」從背包放回儲物箱。旋轉角度保留為 "
+                + draggedStorageRotation.getDisplayName() + "。");
+        refreshUI();
+        if (storageView != null) {
+            storageView.selectItem(item);
+        }
+        return true;
     }
 
     private void rotateDraggedStorageItem(boolean clockwise) {
@@ -400,6 +469,30 @@ public class PreparationScreenController {
         roundManager.refreshShop(session);
         showMessage("已花費 " + SHOP_REFRESH_COST + " 金幣刷新商店。");
         refreshUI();
+    }
+
+
+    @FXML
+    private void onAutoCraft() {
+        if (session == null || session.getPlayer() == null) {
+            showMessage("找不到玩家資料，無法合成。");
+            return;
+        }
+
+        RecipeResult result = recipeService.autoCraftFirst(session.getPlayer());
+        showMessage(result.getMessage());
+
+        if (result.isSuccess()) {
+            selectedPlacedItem = null;
+            selectedStorageItem = result.getResultItem();
+            itemCard.setItem(result.getResultItem());
+            refreshUI();
+            if (storageView != null) {
+                storageView.selectItem(result.getResultItem());
+            }
+        } else {
+            refreshUI();
+        }
     }
 
     @FXML

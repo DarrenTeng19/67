@@ -33,6 +33,7 @@
                     <children>
                         <Button fx:id="btnStartBattle" text="Start Battle" onAction="#onStartBattle"/>
                         <Button fx:id="btnRefreshShop" text="Refresh Shop ($1)" onAction="#onRefreshShop"/>
+                        <Button fx:id="btnAutoCraft" text="自動合成" onAction="#onAutoCraft"/>
                         <Button fx:id="btnOpenStorage" text="Storage Help" onAction="#onOpenStorage"/>
                     </children>
                 </HBox>
