@@ -73,7 +73,7 @@ public class ShopGenerator {
                 "placeholder_stick",
                 "Wooden Stick",
                 ItemAffinity.COMMON,
-                Set.of(ItemRole.EQUIPMENT),
+                Set.of(ItemRole.COMPONENT),
                 ItemShapes.rectangle(1, 1),
                 5, // price
                 1, // rarity
@@ -82,7 +82,7 @@ public class ShopGenerator {
                 1.0, // hitRate
                 0,   // staminaCost
                 0,   // manaCost
-                "A simple wooden stick.",
+                "Fallback component item.",
                 List.<ItemEffect>of()
         ) {};
     }
