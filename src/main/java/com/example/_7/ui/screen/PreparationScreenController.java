@@ -112,6 +112,18 @@ public class PreparationScreenController {
     private void onStartBattle() {
         try {
             BattleEngine engine = new BattleEngine(session.getPlayer(), session.getCurrentEnemy());
+
+            // Priority 4：把玩家與敵人「背包中實際參戰的道具」交給 BattleEngine。
+            // BattleEngine 不直接讀取 Backpack，這樣可以維持 battle 和 inventory 的低耦合。
+            engine.setItemsFor(
+                    session.getPlayer(),
+                    session.getPlayer().getBackpack().getBattleItems()
+            );
+            engine.setItemsFor(
+                    session.getCurrentEnemy(),
+                    session.getCurrentEnemy().getBackpack().getBattleItems()
+            );
+
             engine.startBattle();
 
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/com/example/_7/battle.fxml"));

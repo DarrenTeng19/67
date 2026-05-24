@@ -26,7 +26,7 @@ public class GameApp extends Application {
         // 建立共享服務
         ItemCatalog itemCatalog = new ItemCatalog();
         ShopGenerator shopGenerator = new ShopGenerator(itemCatalog);
-        EnemyFactory enemyFactory = new EnemyFactory();
+        EnemyFactory enemyFactory = new EnemyFactory(itemCatalog);
         roundManager = new RoundManager(enemyFactory, shopGenerator);
 
         // 建立玩家與 session - 改為使用 Backpack 與 Storage

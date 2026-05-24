@@ -133,11 +133,7 @@ public class Backpack {
         return false;
     }
 
-    private boolean canPlace(PlacedItem placedItem) {
-        // 暫時簡單實現：允許放置
-        return true;
-    }
-}
+
     /*
      * 將某個 PlacedItem 的局部 shape cell，
      * 轉換成背包上的實際格子座標。

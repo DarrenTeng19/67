@@ -18,7 +18,7 @@ public class ItemCatalog {
 
     public ItemCatalog() {
         this.allItems = List.of(
-                /*createBanana(),
+                createBanana(),
                 createEnergyDrink(),
                 createIronPlate(),
                 createManaShard(),
@@ -65,7 +65,7 @@ public class ItemCatalog {
                 createThornArmor(),
                 createHeroHimmelSword(),
                 createDeadlyDagger(),
-                createBurningBroom()
+                createBurningBroom(),
                 createAdventurerHelmet(),
                 createRangerVestEquipment(),
                 createPoisonBow(),
@@ -76,7 +76,7 @@ public class ItemCatalog {
                 createAdvancedWand(),
                 createDarkMageHat(),
                 createManaCloak(),
-                createFrierenStaff()*/
+                createFrierenStaff()
         );
     }
 
