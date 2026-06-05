@@ -23,7 +23,10 @@
                 </HBox>
                 <HBox spacing="8.0">
                     <children>
-                        <Button fx:id="btnAbort" text="Abort" onAction="#onAbort"/>
+                        <Button fx:id="btnPause" text="Pause" onAction="#onPause"/>
+                        <Button fx:id="btnResume" text="Resume" onAction="#onResume"/>
+                        <Button fx:id="btnSpeed1x" text="1x" onAction="#onSpeed1x"/>
+                        <Button fx:id="btnSpeed2x" text="2x" onAction="#onSpeed2x"/>
                     </children>
                 </HBox>
             </children>
