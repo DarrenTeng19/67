@@ -55,4 +55,14 @@ public class RecipeCatalog {
                 .filter(recipe -> recipe.matches(itemAId, itemBId))
                 .findFirst();
     }
+
+    public boolean isRecipeIngredient(String itemId) {
+        if (itemId == null || itemId.isBlank()) {
+            return false;
+        }
+        return recipes.stream().anyMatch(recipe ->
+                itemId.equals(recipe.getIngredientAId())
+                        || itemId.equals(recipe.getIngredientBId())
+        );
+    }
 }

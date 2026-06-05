@@ -23,6 +23,8 @@ import com.example._7.item.effect.EffectContext;
 import com.example._7.item.effect.ItemEffect;
 
 import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,7 @@ public class BattleEngine {
 
     /** 狀態更新計時器：中毒與燃燒每 1 秒結算一次。 */
     private final Map<Combatant, Double> statusTimers;
+    private final Deque<BattleEvent> pendingEvents;
 
     private boolean battleStarted;
     private boolean battleEnded;
@@ -69,6 +72,7 @@ public class BattleEngine {
         this.staminaRecoveryRemainders = new IdentityHashMap<>();
         this.manaRecoveryRemainders = new IdentityHashMap<>();
         this.statusTimers = new IdentityHashMap<>();
+        this.pendingEvents = new ArrayDeque<>();
 
         setItemsFor(player, playerItems);
         setItemsFor(enemy, enemyItems);
@@ -76,6 +80,7 @@ public class BattleEngine {
         this.battleStarted = false;
         this.battleEnded = false;
         this.winner = null;
+        this.pendingEvents.clear();
     }
 
     /**
@@ -259,11 +264,17 @@ public class BattleEngine {
             }
 
             payResourceCosts(owner, item);
+            pendingEvents.addLast(new BattleEvent(
+                    BattleEvent.Type.ATTACK, owner, target, item, 0
+            ));
 
             double finalHitRate = EffectContext.getFinalHitRate(owner, target, item.getHitRate());
             boolean hit = random.nextDouble() <= finalHitRate;
 
             if (hit) {
+                pendingEvents.addLast(new BattleEvent(
+                        BattleEvent.Type.HIT, owner, target, item, 0
+                ));
                 int targetTotalBefore = target.getBattleState().getCurrentHp()
                         + target.getBattleState().getCurrentShield();
 
@@ -277,8 +288,19 @@ public class BattleEngine {
 
                 boolean targetTookAttackDamage = targetTotalAfter < targetTotalBefore;
                 if (targetTookAttackDamage) {
+                    pendingEvents.addLast(new BattleEvent(
+                            BattleEvent.Type.DAMAGE,
+                            owner,
+                            target,
+                            item,
+                            targetTotalBefore - targetTotalAfter
+                    ));
                     EffectContext.applyThornsCounterDamage(target, owner);
                 }
+            } else {
+                pendingEvents.addLast(new BattleEvent(
+                        BattleEvent.Type.MISS, owner, target, item, 0
+                ));
             }
 
             // 不管命中或未命中，只要嘗試觸發並消耗資源，就重新計算冷卻。
@@ -340,5 +362,11 @@ public class BattleEngine {
 
     public Combatant getEnemy() {
         return enemy;
+    }
+
+    public List<BattleEvent> drainEvents() {
+        List<BattleEvent> events = new ArrayList<>(pendingEvents);
+        pendingEvents.clear();
+        return events;
     }
 }

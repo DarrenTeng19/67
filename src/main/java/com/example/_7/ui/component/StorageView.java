@@ -16,7 +16,6 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
@@ -26,13 +25,11 @@ import java.util.function.Supplier;
 public class StorageView extends VBox {
     private final ListView<Item> list = new ListView<>(FXCollections.observableArrayList());
     private final Button btnAutoPlace = new Button("自動放入背包");
-    private final Button btnSell = new Button("賣出選取物品");
     private final Label rotationHint = new Label("旋轉：0°");
     private final Label helpLabel = new Label("Q / R  旋轉");
 
     private Consumer<Item> onItemSelected;
     private Consumer<Item> onAutoPlaceRequested;
-    private Consumer<Item> onSellRequested;
     private Consumer<Item> onDragStarted;
     private Runnable onDragDone;
     private Consumer<Rotation> onRotationChanged;
@@ -93,19 +90,10 @@ public class StorageView extends VBox {
             }
         });
 
-        btnSell.setMaxWidth(Double.MAX_VALUE);
-        btnSell.setOnAction(event -> {
-            Item selected = getSelectedItem();
-            if (selected != null && onSellRequested != null) {
-                onSellRequested.accept(selected);
-            }
-        });
-
-        HBox buttons = new HBox(6, btnAutoPlace, btnSell);
         getChildren().addAll(
                 list,
                 rotationHint,
-                buttons,
+                btnAutoPlace,
                 helpLabel
         );
     }
@@ -163,10 +151,6 @@ public class StorageView extends VBox {
 
     public void setOnAutoPlaceRequested(Consumer<Item> onAutoPlaceRequested) {
         this.onAutoPlaceRequested = onAutoPlaceRequested;
-    }
-
-    public void setOnSellRequested(Consumer<Item> onSellRequested) {
-        this.onSellRequested = onSellRequested;
     }
 
     public void setOnDragStarted(Consumer<Item> onDragStarted) {
