@@ -22,12 +22,14 @@ public class BattleScreenController {
     private GameApp app;
 
     // containers
-    @FXML private AnchorPane statusPanelContainer;
-    @FXML private AnchorPane charInfoContainer;
-    @FXML private AnchorPane playerHealthContainer;
-    @FXML private AnchorPane enemyHealthContainer;
-
-    @FXML private Button btnAbort;
+    @FXML
+    private AnchorPane statusPanelContainer;
+    @FXML
+    private AnchorPane charInfoContainer;
+    @FXML
+    private AnchorPane playerHealthContainer;
+    @FXML
+    private AnchorPane enemyHealthContainer;
 
     // created components
     private BattleStatusPanel statusPanel;
@@ -37,6 +39,10 @@ public class BattleScreenController {
 
     private AnimationTimer timer;
     private long lastTimeNs = -1;
+
+    // battle status controller
+    private boolean paused = false;
+    private double speedMultiplier = 1.0;
 
     public void init(GameSession session, BattleEngine engine, RoundManager roundManager, GameApp app) {
         this.session = session;
@@ -103,7 +109,10 @@ public class BattleScreenController {
                 double deltaSeconds = (now - lastTimeNs) / 1_000_000_000.0;
                 lastTimeNs = now;
 
-                engine.update(deltaSeconds);
+                // 新增遊戲暫行跟遊戲速度控制機制
+                if (!paused) {
+                    engine.update(deltaSeconds * speedMultiplier);
+                }
                 updateUI();
 
                 boolean playerDead = session.getPlayer().isDead();
@@ -111,22 +120,18 @@ public class BattleScreenController {
 
                 if (playerDead || enemyDead) {
                     stop();
-                    if (enemyDead && !playerDead) roundManager.handleBattleVictory(session);
-                    else roundManager.handleBattleDefeat(session);
 
-                    try {
-                        if (session.getCurrentPhase() == GamePhase.PREPARATION) {
-                            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/com/example/_7/preparation.fxml"));
-                            javafx.scene.Parent root = loader.load();
-                            PreparationScreenController prep = loader.getController();
-                            prep.init(session, roundManager, app);
-                            javafx.stage.Stage stage = (javafx.stage.Stage) btnAbort.getScene().getWindow();
-                            stage.getScene().setRoot(root);
-                        } else {
-                            // game over
+                    if (enemyDead && !playerDead) {
+                        roundManager.handleBattleVictory(session);
+
+                        if (session.getCurrentPhase() == GamePhase.REWARD) {
+                            app.getSceneManager().showReward(session, roundManager);
+                        } else if (session.getCurrentPhase() == GamePhase.GAME_OVER) {
+                            app.getSceneManager().showGameOver(session);
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        roundManager.handleBattleDefeat(session);
+                        app.getSceneManager().showGameOver(session);
                     }
                 }
             }
@@ -159,8 +164,34 @@ public class BattleScreenController {
         }
     }
 
+    // 暫停/繼續 戰鬥速度控制區
     @FXML
-    private void onAbort() {
-        if (timer != null) timer.stop();
+    private Button btnPause;
+    @FXML
+    private Button btnResume;
+    @FXML
+    private Button btnSpeed1x;
+    @FXML
+    private Button btnSpeed2x;
+
+    @FXML
+    private void onPause() {
+        paused = true;
+    }
+
+    @FXML
+    private void onResume() {
+        paused = false;
+        lastTimeNs = -1; // 避免暫停很久後 resume 的瞬間 deltaSeconds 爆掉
+    }
+
+    @FXML
+    private void onSpeed1x() {
+        speedMultiplier = 1.0;
+    }
+
+    @FXML
+    private void onSpeed2x() {
+        speedMultiplier = 2.0;
     }
 }

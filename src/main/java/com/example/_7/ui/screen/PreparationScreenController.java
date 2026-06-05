@@ -26,7 +26,6 @@ import com.example._7.ui.component.RecycleBinView;
 import com.example._7.ui.component.ShopPanel;
 import com.example._7.ui.component.StorageView;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -43,24 +42,40 @@ public class PreparationScreenController {
     private RoundManager roundManager;
     private GameApp app;
 
-    @FXML private BorderPane root;
+    @FXML
+    private BorderPane root;
 
-    @FXML private AnchorPane charInfoContainer;
-    @FXML private AnchorPane healthBarContainer;
-    @FXML private AnchorPane shopPanelContainer;
-    @FXML private AnchorPane storageContainer;
-    @FXML private AnchorPane backpackContainer;
-    @FXML private AnchorPane itemCardContainer;
-    @FXML private ImageView characterPortrait;
-    @FXML private Label lblRoundBadge;
-    @FXML private Label lblShopCount;
-    @FXML private Label lblStorageCount;
-    @FXML private Label lblBackpackCount;
+    @FXML
+    private AnchorPane charInfoContainer;
+    @FXML
+    private AnchorPane healthBarContainer;
+    @FXML
+    private AnchorPane shopPanelContainer;
+    @FXML
+    private AnchorPane storageContainer;
+    @FXML
+    private AnchorPane backpackContainer;
+    @FXML
+    private AnchorPane itemCardContainer;
+    @FXML
+    private ImageView characterPortrait;
+    @FXML
+    private Label lblRoundBadge;
+    @FXML
+    private Label lblShopCount;
+    @FXML
+    private Label lblStorageCount;
+    @FXML
+    private Label lblBackpackCount;
 
-    @FXML private Button btnStartBattle;
-    @FXML private Button btnRefreshShop;
-    @FXML private Button btnAutoCraft;
-    @FXML private Button btnOpenStorage;
+    @FXML
+    private Button btnStartBattle;
+    @FXML
+    private Button btnRefreshShop;
+    @FXML
+    private Button btnAutoCraft;
+    @FXML
+    private Button btnOpenStorage;
 
     private CharacterInfoPanel charInfo;
     private HealthBarView healthBar;
@@ -81,7 +96,6 @@ public class PreparationScreenController {
         this.roundManager = roundManager;
         this.app = app;
 
-        roundManager.initializeCurrentRound(session);
         refreshUI();
     }
 
@@ -482,13 +496,7 @@ public class PreparationScreenController {
             engine.setItemsFor(session.getCurrentEnemy(), session.getCurrentEnemy().getBackpack().getBattleItems());
             engine.startBattle();
 
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/com/example/_7/battle.fxml"));
-            Parent root = loader.load();
-            BattleScreenController battleCtrl = loader.getController();
-            battleCtrl.init(session, engine, roundManager, app);
-
-            javafx.stage.Stage stage = (javafx.stage.Stage) btnStartBattle.getScene().getWindow();
-            stage.getScene().setRoot(root);
+            app.getSceneManager().showBattle(session, engine, roundManager);
         } catch (Exception e) {
             e.printStackTrace();
             showMessage("開始戰鬥失敗：" + e.getMessage());

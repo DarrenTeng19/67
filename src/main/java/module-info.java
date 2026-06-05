@@ -9,4 +9,6 @@ module com.example._7 {
     opens com.example._7.ui.screen to javafx.fxml;
     opens com.example._7.ui.component to javafx.fxml;
     opens com.example._7.app to javafx.graphics;
+    exports com.example._7.ui to javafx.graphics;
+    opens com.example._7.ui to javafx.graphics;
 }
