@@ -37,6 +37,18 @@ public class RoundManager {
         session.setCurrentPhase(GamePhase.PREPARATION);
     }
 
+
+    public void refreshShop(GameSession session) {
+        if (session == null || session.getPlayer() == null) {
+            return;
+        }
+        Shop shop = shopGenerator.generateShop(
+                session.getPlayer().getCharacterClass(),
+                session.getCurrentRound()
+        );
+        session.setCurrentShop(shop);
+    }
+
     public void handleBattleVictory(GameSession session) {
         session.increaseDefeatedEnemies();
 

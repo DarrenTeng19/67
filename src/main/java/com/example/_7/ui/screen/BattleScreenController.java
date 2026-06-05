@@ -5,6 +5,7 @@ import com.example._7.battle.BattleEngine;
 import com.example._7.game.GamePhase;
 import com.example._7.game.GameSession;
 import com.example._7.game.RoundManager;
+import com.example._7.item.effect.EffectContext;
 import com.example._7.ui.component.BattleStatusPanel;
 import com.example._7.ui.component.CharacterInfoPanel;
 import com.example._7.ui.component.HealthBarView;
@@ -136,19 +137,26 @@ public class BattleScreenController {
     private void updateUI() {
         try {
             int playerCur = session.getPlayer().getBattleState().getCurrentHp();
-            int playerMax = session.getPlayer().getBattleState().getMaxHp();
-            int enemyCur = session.getCurrentEnemy().getBattleState().getCurrentHp();
-            int enemyMax = session.getCurrentEnemy().getBattleState().getMaxHp();
+            int playerMax = EffectContext.getEffectiveMaxHp(session.getPlayer());
 
-            if (playerHealth != null) playerHealth.update(playerCur, playerMax);
-            if (enemyHealth != null) enemyHealth.update(enemyCur, enemyMax);
+            int enemyCur = session.getCurrentEnemy().getBattleState().getCurrentHp();
+            int enemyMax = EffectContext.getEffectiveMaxHp(session.getCurrentEnemy());
+
+            if (playerHealth != null) {
+                playerHealth.update(playerCur, playerMax);
+            }
+
+            if (enemyHealth != null) {
+                enemyHealth.update(enemyCur, enemyMax);
+            }
 
             if (statusPanel != null) {
                 double pRatio = playerMax > 0 ? (double) playerCur / playerMax : 0;
                 double eRatio = enemyMax > 0 ? (double) enemyCur / enemyMax : 0;
                 statusPanel.update(pRatio, eRatio);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     @FXML

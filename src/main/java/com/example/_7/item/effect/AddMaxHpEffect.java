@@ -19,6 +19,6 @@ public class AddMaxHpEffect implements ItemEffect {
 
     @Override
     public String getDescription() {
-        return "最大 HP +" + amount;
+        return "最大生命 +" + amount;
     }
 }

@@ -18,7 +18,7 @@ public class ItemCatalog {
 
     public ItemCatalog() {
         this.allItems = List.of(
-                /*createBanana(),
+                createBanana(),
                 createEnergyDrink(),
                 createIronPlate(),
                 createManaShard(),
@@ -65,7 +65,7 @@ public class ItemCatalog {
                 createThornArmor(),
                 createHeroHimmelSword(),
                 createDeadlyDagger(),
-                createBurningBroom()
+                createBurningBroom(),
                 createAdventurerHelmet(),
                 createRangerVestEquipment(),
                 createPoisonBow(),
@@ -76,7 +76,7 @@ public class ItemCatalog {
                 createAdvancedWand(),
                 createDarkMageHat(),
                 createManaCloak(),
-                createFrierenStaff()*/
+                createFrierenStaff()
         );
     }
 
@@ -97,9 +97,17 @@ public class ItemCatalog {
 
     public List<Item> getShopPool(CharacterClass characterClass, int round) {
         return allItems.stream()
+                // 商店只販售「可作為合成材料」的道具。
+                // 純 EQUIPMENT 不會出現在商店；
+                // 但 EQUIPMENT + COMPONENT 這種「裝備兼材料」仍然可以出現。
+                .filter(this::isAvailableInShop)
                 .filter(item -> isAvailableForClass(item, characterClass))
                 .filter(item -> isAvailableInRound(item, round))
                 .toList();
+    }
+
+    private boolean isAvailableInShop(Item item) {
+        return item.isComponent();
     }
 
     private boolean isAvailableForClass(Item item, CharacterClass characterClass) {

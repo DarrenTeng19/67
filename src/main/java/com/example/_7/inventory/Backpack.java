@@ -7,6 +7,7 @@ import com.example._7.item.shape.ItemShape;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class Backpack {
@@ -15,7 +16,7 @@ public class Backpack {
 
     private final int rows;
     private final int cols;
-    private List<PlacedItem> placedItems;
+    private final List<PlacedItem> placedItems;
 
     public Backpack() {
         this(DEFAULT_ROWS, DEFAULT_COLS);
@@ -25,7 +26,6 @@ public class Backpack {
         if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("Backpack size must be positive.");
         }
-
         this.rows = rows;
         this.cols = cols;
         this.placedItems = new ArrayList<>();
@@ -43,41 +43,21 @@ public class Backpack {
         return List.copyOf(placedItems);
     }
 
-    /*
-     * 嘗試把道具放進背包。
-     * 成功：加入 placedItems，回傳 true
-     * 失敗：不改變背包，回傳 false
-     */
     public boolean tryPlaceItem(PlacedItem placedItem) {
         if (placedItem == null) {
             return false;
         }
-
         if (!canPlace(placedItem)) {
             return false;
         }
-
         placedItems.add(placedItem);
         return true;
     }
 
-    /*
-     * 檢查一個道具以目前 position + rotation 是否能放進背包。
-     *
-     * 適用於：
-     * 1. 新道具首次擺放
-     * 2. 移動後判斷
-     * 3. 旋轉後判斷
-     */
     public boolean canPlace(PlacedItem candidate) {
         return canPlace(candidate, null);
     }
 
-    /*
-     * internal version：
-     * ignoredItem 用於「旋轉自己」或「移動自己」時，
-     * 避免候選道具和它原本的自己發生碰撞判定。
-     */
     private boolean canPlace(PlacedItem candidate, PlacedItem ignoredItem) {
         if (candidate == null) {
             return false;
@@ -85,21 +65,17 @@ public class Backpack {
 
         Set<GridPosition> candidateCells = getOccupiedBackpackCells(candidate);
 
-        // 1. 邊界檢查
         for (GridPosition cell : candidateCells) {
             if (!isInsideBackpack(cell)) {
                 return false;
             }
         }
 
-        // 2. 與其他已放置道具檢查重疊
         for (PlacedItem existingItem : placedItems) {
             if (existingItem == ignoredItem) {
                 continue;
             }
-
             Set<GridPosition> existingCells = getOccupiedBackpackCells(existingItem);
-
             for (GridPosition cell : candidateCells) {
                 if (existingCells.contains(cell)) {
                     return false;
@@ -110,20 +86,31 @@ public class Backpack {
         return true;
     }
 
-    /*
-     * 嘗試將已放在背包中的道具順時針旋轉 90 度。
-     *
-     * 旋轉後若仍合法，保留旋轉結果。
-     * 若超界或撞到其他道具，恢復原本 rotation。
-     */
     public boolean tryRotateItem(PlacedItem placedItem) {
-        if (placedItem == null || !placedItems.contains(placedItem)) {
+        return tryRotateItemClockwise(placedItem);
+    }
+
+    public boolean tryRotateItemClockwise(PlacedItem placedItem) {
+        if (placedItem == null) {
+            return false;
+        }
+        return tryRotateItemTo(placedItem, placedItem.getRotation().nextClockwise());
+    }
+
+    public boolean tryRotateItemCounterClockwise(PlacedItem placedItem) {
+        if (placedItem == null) {
+            return false;
+        }
+        return tryRotateItemTo(placedItem, placedItem.getRotation().nextCounterClockwise());
+    }
+
+    public boolean tryRotateItemTo(PlacedItem placedItem, Rotation newRotation) {
+        if (placedItem == null || newRotation == null || !placedItems.contains(placedItem)) {
             return false;
         }
 
         Rotation originalRotation = placedItem.getRotation();
-
-        placedItem.rotateClockwise();
+        placedItem.setRotation(newRotation);
 
         if (canPlace(placedItem, placedItem)) {
             return true;
@@ -133,16 +120,7 @@ public class Backpack {
         return false;
     }
 
-    private boolean canPlace(PlacedItem placedItem) {
-        // 暫時簡單實現：允許放置
-        return true;
-    }
-}
-    /*
-     * 將某個 PlacedItem 的局部 shape cell，
-     * 轉換成背包上的實際格子座標。
-     */
-    private  Set<GridPosition> getOccupiedBackpackCells(PlacedItem placedItem) {
+    private Set<GridPosition> getOccupiedBackpackCells(PlacedItem placedItem) {
         Set<GridPosition> occupiedPositions = new HashSet<>();
 
         GridPosition basePosition = placedItem.getPosition();
@@ -151,7 +129,6 @@ public class Backpack {
         for (GridOffset offset : currentShape.occupiedCells()) {
             int actualRow = basePosition.row() + offset.row();
             int actualCol = basePosition.col() + offset.col();
-
             occupiedPositions.add(new GridPosition(actualRow, actualCol));
         }
 
@@ -169,13 +146,11 @@ public class Backpack {
         if (placedItem == null || newPosition == null) {
             return false;
         }
-
         if (!placedItems.contains(placedItem)) {
             return false;
         }
 
         GridPosition originalPosition = placedItem.getPosition();
-
         placedItem.setPosition(newPosition);
 
         if (canPlace(placedItem, placedItem)) {
@@ -193,14 +168,39 @@ public class Backpack {
         return placedItems.remove(placedItem);
     }
 
-    // 讓 BattleEngine 可以呼叫 取得背包中的物品名單
+    public Optional<PlacedItem> getPlacedItemAt(GridPosition position) {
+        if (position == null) {
+            return Optional.empty();
+        }
+        for (PlacedItem placedItem : placedItems) {
+            if (getOccupiedBackpackCells(placedItem).contains(position)) {
+                return Optional.of(placedItem);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<GridPosition> findFirstAvailablePosition(Item item) {
+        if (item == null) {
+            return Optional.empty();
+        }
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                GridPosition position = new GridPosition(row, col);
+                PlacedItem candidate = new PlacedItem(item, position);
+                if (canPlace(candidate)) {
+                    return Optional.of(position);
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
     public List<Item> getBattleItems() {
         List<Item> battleItems = new ArrayList<>();
-
         for (PlacedItem placedItem : placedItems) {
             battleItems.add(placedItem.getItem());
         }
-
         return List.copyOf(battleItems);
     }
 }
