@@ -9,6 +9,7 @@ import com.example._7.inventory.Backpack;
 import com.example._7.inventory.Storage;
 import com.example._7.item.ItemCatalog;
 import com.example._7.shop.ShopGenerator;
+import com.example._7.ui.screen.MainMenuScreen;
 import com.example._7.ui.screen.PreparationScreenController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,35 +19,75 @@ import javafx.stage.Stage;
 
 public class GameApp extends Application {
 
+    private static final int WINDOW_WIDTH = 1100;
+    private static final int WINDOW_HEIGHT = 700;
+    private static final int STARTING_GOLD = 10000;
+
+    private Stage primaryStage;
     private RoundManager roundManager;
     private GameSession session;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
+
         ItemCatalog itemCatalog = new ItemCatalog();
         ShopGenerator shopGenerator = new ShopGenerator(itemCatalog);
         EnemyFactory enemyFactory = new EnemyFactory(itemCatalog);
         roundManager = new RoundManager(enemyFactory, shopGenerator);
 
+        primaryStage.setMinWidth(960);
+        primaryStage.setMinHeight(640);
+        showMainMenu();
+        primaryStage.show();
+    }
+
+    public void showMainMenu() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/_7/main-menu.fxml"));
+            Parent root = loader.load();
+
+            MainMenuScreen controller = loader.getController();
+            controller.init(this);
+
+            setRoot(root, "Backpack Battles - 主選單");
+        } catch (Exception e) {
+            throw new IllegalStateException("無法載入主選單", e);
+        }
+    }
+
+    public void startNewGame(CharacterClass characterClass) {
+        CharacterClass selectedClass = characterClass == null ? CharacterClass.WARRIOR : characterClass;
         Player player = new Player(
                 "Player",
-                CharacterClass.WARRIOR,
-                10000,
-                CharacterClass.WARRIOR.createInitialStats(),
+                selectedClass,
+                STARTING_GOLD,
+                selectedClass.createInitialStats(),
                 new Backpack(),
                 new Storage()
         );
         session = new GameSession(player);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/_7/preparation.fxml"));
-        Parent root = loader.load();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/_7/preparation.fxml"));
+            Parent root = loader.load();
 
-        PreparationScreenController controller = loader.getController();
-        controller.init(session, roundManager, this);
+            PreparationScreenController controller = loader.getController();
+            controller.init(session, roundManager, this);
 
-        primaryStage.setScene(new Scene(root, 1000, 650));
-        primaryStage.setTitle("Backpack Auto Battler - Preparation");
-        primaryStage.show();
+            setRoot(root, "Backpack Battles - 準備階段");
+        } catch (Exception e) {
+            throw new IllegalStateException("無法開始新遊戲", e);
+        }
+    }
+
+    private void setRoot(Parent root, String title) {
+        if (primaryStage.getScene() == null) {
+            primaryStage.setScene(new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT));
+        } else {
+            primaryStage.getScene().setRoot(root);
+        }
+        primaryStage.setTitle(title);
     }
 
     public static void main(String[] args) {

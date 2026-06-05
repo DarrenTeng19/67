@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="700.0" prefWidth="1100.0"
+            stylesheets="@main-menu.css"
+            styleClass="menu-root"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example._7.ui.screen.MainMenuScreen">
+    <top>
+        <StackPane>
+            <VBox alignment="CENTER" spacing="0.0">
+                <padding>
+                    <Insets top="24.0" right="24.0" bottom="4.0" left="24.0"/>
+                </padding>
+                <Label text="背 包 亂 鬥" styleClass="game-title"/>
+                <Label text="BACKPACK BATTLES" styleClass="game-title-en"/>
+            </VBox>
+        </StackPane>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" spacing="18.0">
+            <padding>
+                <Insets top="0.0" right="48.0" bottom="20.0" left="48.0"/>
+            </padding>
+
+            <Label text="請選擇一個職業" styleClass="section-title"/>
+
+            <HBox alignment="CENTER" spacing="16.0">
+                <ToggleButton fx:id="btnWarrior" maxWidth="Infinity" styleClass="class-button">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6.0">
+                            <Label text="⚔" styleClass="class-icon"/>
+                            <Label text="戰士" styleClass="class-button-name"/>
+                        </VBox>
+                    </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="btnRanger" maxWidth="Infinity" styleClass="class-button">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6.0">
+                            <Label text="➶" styleClass="class-icon"/>
+                            <Label text="遊俠" styleClass="class-button-name"/>
+                        </VBox>
+                    </graphic>
+                </ToggleButton>
+                <ToggleButton fx:id="btnMage" maxWidth="Infinity" styleClass="class-button">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="6.0">
+                            <Label text="✦" styleClass="class-icon"/>
+                            <Label text="魔法師" styleClass="class-button-name"/>
+                        </VBox>
+                    </graphic>
+                </ToggleButton>
+            </HBox>
+
+            <HBox alignment="CENTER" spacing="24.0">
+                <StackPane prefWidth="300.0" prefHeight="270.0" styleClass="character-stage">
+                    <ImageView fx:id="characterImage" fitHeight="330.0" fitWidth="300.0"
+                               preserveRatio="true" smooth="true" visible="false" managed="false"/>
+                </StackPane>
+
+                <VBox alignment="CENTER" prefWidth="420.0" spacing="12.0" styleClass="preview-card">
+                    <Label fx:id="lblClassName" text="戰士" styleClass="class-name"/>
+                    <Label fx:id="lblClassDescription" text="高生命與高耐力。" wrapText="true"
+                           textAlignment="CENTER" styleClass="class-description"/>
+                    <HBox spacing="8.0" alignment="CENTER">
+                        <VBox alignment="CENTER" styleClass="stat-bubble">
+                            <Label text="生命" styleClass="stat-label"/>
+                            <Label fx:id="lblHp" text="120" styleClass="stat-value"/>
+                        </VBox>
+                        <VBox alignment="CENTER" styleClass="stat-bubble">
+                            <Label text="耐力" styleClass="stat-label"/>
+                            <Label fx:id="lblStamina" text="12" styleClass="stat-value"/>
+                        </VBox>
+                        <VBox alignment="CENTER" styleClass="stat-bubble">
+                            <Label text="魔力" styleClass="stat-label"/>
+                            <Label fx:id="lblMana" text="4" styleClass="stat-value"/>
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="8.0" alignment="CENTER">
+                        <Label text="耐力恢復" styleClass="recovery-label"/>
+                        <Label fx:id="lblStaminaRecovery" text="3 / 秒" styleClass="recovery-value"/>
+                        <Region minWidth="18.0"/>
+                        <Label text="魔力恢復" styleClass="recovery-label"/>
+                        <Label fx:id="lblManaRecovery" text="0.5 / 秒" styleClass="recovery-value"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <Button text="開始冒險" onAction="#onStartGame" prefWidth="280.0" styleClass="start-button"/>
+
+            <HBox alignment="CENTER" spacing="12.0">
+                <Button text="看看道具" onAction="#onShowItems" styleClass="small-button"/>
+                <Button text="合成配方" onAction="#onShowRecipes" styleClass="small-button"/>
+                <Button text="離開遊戲" onAction="#onExit" styleClass="small-button"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
