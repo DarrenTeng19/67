@@ -16,20 +16,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import com.example._7.ui.SceneManager;
 
 public class GameApp extends Application {
 
     private static final int WINDOW_WIDTH = 1100;
     private static final int WINDOW_HEIGHT = 700;
-    private static final int STARTING_GOLD = 10000;
+    private static final int STARTING_GOLD = 30;
 
     private Stage primaryStage;
     private RoundManager roundManager;
     private GameSession session;
 
+    private SceneManager sceneManager;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        this.sceneManager = new SceneManager(primaryStage, this);
 
         ItemCatalog itemCatalog = new ItemCatalog();
         ShopGenerator shopGenerator = new ShopGenerator(itemCatalog);
@@ -43,17 +47,7 @@ public class GameApp extends Application {
     }
 
     public void showMainMenu() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/_7/main-menu.fxml"));
-            Parent root = loader.load();
-
-            MainMenuScreen controller = loader.getController();
-            controller.init(this);
-
-            setRoot(root, "Backpack Battles - 主選單");
-        } catch (Exception e) {
-            throw new IllegalStateException("無法載入主選單", e);
-        }
+        sceneManager.showMainMenu();
     }
 
     public void startNewGame(CharacterClass characterClass) {
@@ -68,17 +62,8 @@ public class GameApp extends Application {
         );
         session = new GameSession(player);
 
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/_7/preparation.fxml"));
-            Parent root = loader.load();
-
-            PreparationScreenController controller = loader.getController();
-            controller.init(session, roundManager, this);
-
-            setRoot(root, "Backpack Battles - 準備階段");
-        } catch (Exception e) {
-            throw new IllegalStateException("無法開始新遊戲", e);
-        }
+       roundManager.initializeCurrentRound(session);
+       sceneManager.showPreparation(session, roundManager);
     }
 
     private void setRoot(Parent root, String title) {
@@ -90,6 +75,9 @@ public class GameApp extends Application {
         primaryStage.setTitle(title);
     }
 
+    public SceneManager getSceneManager() {
+        return sceneManager;
+    }
     public static void main(String[] args) {
         launch(args);
     }

@@ -120,22 +120,18 @@ public class BattleScreenController {
 
                 if (playerDead || enemyDead) {
                     stop();
-                    if (enemyDead && !playerDead) roundManager.handleBattleVictory(session);
-                    else roundManager.handleBattleDefeat(session);
 
-                    try {
-                        if (session.getCurrentPhase() == GamePhase.PREPARATION) {
-                            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/com/example/_7/preparation.fxml"));
-                            javafx.scene.Parent root = loader.load();
-                            PreparationScreenController prep = loader.getController();
-                            prep.init(session, roundManager, app);
-                            javafx.stage.Stage stage = (javafx.stage.Stage) btnPause.getScene().getWindow();
-                            stage.getScene().setRoot(root);
-                        } else {
-                            // game over
+                    if (enemyDead && !playerDead) {
+                        roundManager.handleBattleVictory(session);
+
+                        if (session.getCurrentPhase() == GamePhase.REWARD) {
+                            app.getSceneManager().showReward(session, roundManager);
+                        } else if (session.getCurrentPhase() == GamePhase.GAME_OVER) {
+                            app.getSceneManager().showGameOver(session);
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } else {
+                        roundManager.handleBattleDefeat(session);
+                        app.getSceneManager().showGameOver(session);
                     }
                 }
             }

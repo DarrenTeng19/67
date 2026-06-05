@@ -30,12 +30,18 @@ public class GameSession {
     private GamePhase currentPhase;
     private GameResult gameResult;
 
+    // 供每一個 battle 結算時顯示獎勵金額
+    private int lastGoldReward;
+    private int lastClearedRound;
+
     public GameSession(Player player) {
         this.player = player;
         this.currentRound = 1;
         this.defeatedEnemies = 0;
         this.currentPhase = GamePhase.PREPARATION;
         this.gameResult = GameResult.IN_PROGRESS;
+        this.lastGoldReward = 0;
+        this.lastClearedRound = 0;
     }
 
     public Player getPlayer() {
@@ -94,5 +100,22 @@ public class GameSession {
 
     public void increaseDefeatedEnemies() {
         defeatedEnemies++;
+    }
+
+    // 金幣獎勵金額 getter
+    public int getLastGoldReward() {
+        return lastGoldReward;
+    }
+
+    public void setLastGoldReward(int lastGoldReward) {
+        this.lastGoldReward = Math.max(0, lastGoldReward);
+    }
+
+    public int getLastClearedRound() {
+        return lastClearedRound;
+    }
+
+    public void setLastClearedRound(int lastClearedRound) {
+        this.lastClearedRound = lastClearedRound;
     }
 }
