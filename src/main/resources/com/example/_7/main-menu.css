@@ -1,5 +1,8 @@
 .menu-root {
-    -fx-background-color: #f7edcf;
+    -fx-background-image: url("images/backgrounds/preparation-parchment.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
     -fx-font-family: "Microsoft JhengHei", "Segoe UI", sans-serif;
 }
 
@@ -8,15 +11,17 @@
 }
 
 .game-title {
-    -fx-font-size: 43px;
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
+    -fx-font-size: 50px;
     -fx-font-weight: 900;
     -fx-text-fill: #7e2f25;
     -fx-effect: dropshadow(gaussian, rgba(77, 57, 43, 0.16), 0, 0, 2, 3);
 }
 
 .game-title-en {
-    -fx-padding: -3px 0 0 0;
-    -fx-font-size: 14px;
+    -fx-padding: 0;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 17px;
     -fx-font-weight: 900;
     -fx-letter-spacing: 5px;
     -fx-text-fill: #b65b38;
@@ -124,6 +129,7 @@
 }
 
 .stat-value {
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
     -fx-font-size: 19px;
     -fx-font-weight: 900;
     -fx-text-fill: #7e382c;

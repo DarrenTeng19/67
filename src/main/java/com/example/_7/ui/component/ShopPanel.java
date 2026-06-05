@@ -93,7 +93,7 @@ public class ShopPanel extends VBox {
                     + "  $" + item.getPrice()
                     + "  " + item.getShape().width() + "x" + item.getShape().height());
             setStyle(offer.isSold()
-                    ? "-fx-opacity: 0.45; -fx-text-fill: #777;"
+                    ? "-fx-opacity: 0.38; -fx-text-fill: #785f46; -fx-font-weight: 700;"
                     : "");
         }
     }
