@@ -135,15 +135,15 @@ public class MainMenuScreen {
         switch (selectedClass) {
             case WARRIOR -> {
                 showCharacterImage(warriorImage);
-                lblClassDescription.setText("高生命與高耐力，擅長使用武器和護甲正面壓制敵人。");
+                lblClassDescription.setText("—— 欣梅爾");
             }
             case RANGER -> {
                 showCharacterImage(rangerImage);
-                lblClassDescription.setText("攻守均衡，利用精準攻擊、毒素與致盲削弱敵人。");
+                lblClassDescription.setText("—— 尤蓓爾");
             }
             case MAGE -> {
                 showCharacterImage(mageImage);
-                lblClassDescription.setText("擁有充沛魔力，以法術傷害和持續性負面效果取勝。");
+                lblClassDescription.setText("—— 芙莉蓮");
             }
         }
     }

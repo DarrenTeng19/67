@@ -202,7 +202,8 @@
 
 .cloth-tag {
     -fx-padding: 3px 9px;
-    -fx-font-size: 10px;
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
+    -fx-font-size: 11px;
     -fx-font-weight: 900;
     -fx-text-fill: #514332;
     -fx-background-color: #d8c69d;
@@ -248,7 +249,8 @@
 
 .brass-tag {
     -fx-padding: 3px 8px;
-    -fx-font-size: 10px;
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
+    -fx-font-size: 11px;
     -fx-font-weight: 900;
     -fx-text-fill: #3c2918;
     -fx-background-color: linear-gradient(to bottom, #e0bd69, #a8782f);
@@ -334,6 +336,7 @@
 }
 
 .health-value {
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
     -fx-font-size: 13px;
     -fx-font-weight: 900;
 }
@@ -358,6 +361,7 @@
 }
 
 .resource-value {
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
     -fx-font-size: 12px;
     -fx-font-weight: 900;
     -fx-text-fill: #5a4031;
@@ -391,6 +395,12 @@
 .component-hint {
     -fx-font-size: 9px;
     -fx-text-fill: #d8bd8c;
+}
+
+.storage-panel .component-hint {
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #68482f;
 }
 
 .backpack-panel {
