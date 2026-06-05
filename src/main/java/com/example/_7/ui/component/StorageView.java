@@ -28,6 +28,7 @@ public class StorageView extends VBox {
     private final Button btnAutoPlace = new Button("自動放入背包");
     private final Button btnSell = new Button("賣出選取物品");
     private final Label rotationHint = new Label("旋轉：0°");
+    private final Label helpLabel = new Label("Q / R  旋轉");
 
     private Consumer<Item> onItemSelected;
     private Consumer<Item> onAutoPlaceRequested;
@@ -43,12 +44,15 @@ public class StorageView extends VBox {
 
     public StorageView() {
         setSpacing(6);
-        setPadding(new Insets(6));
+        setPadding(new Insets(4, 0, 0, 0));
         setFocusTraversable(true);
+        getStyleClass().add("storage-panel");
+        rotationHint.getStyleClass().add("component-hint");
+        helpLabel.getStyleClass().add("component-hint");
         list.setFocusTraversable(true);
 
-        getChildren().add(new Label("Storage 儲物箱"));
-        list.setPrefHeight(260);
+        list.setPrefHeight(215);
+        list.setMinHeight(140);
         list.setCellFactory(view -> new StorageItemCell());
 
         list.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -102,7 +106,7 @@ public class StorageView extends VBox {
                 list,
                 rotationHint,
                 buttons,
-                new Label("提示：拖曳儲物箱物品到背包；也可把背包物品拖回儲物箱。按住/選取物品時按 R/Q 旋轉。")
+                helpLabel
         );
     }
 

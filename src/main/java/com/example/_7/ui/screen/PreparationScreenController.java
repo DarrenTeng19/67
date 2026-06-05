@@ -2,6 +2,7 @@ package com.example._7.ui.screen;
 
 import com.example._7.app.GameApp;
 import com.example._7.battle.BattleEngine;
+import com.example._7.character.EffectiveStatsCalculator;
 import com.example._7.character.Player;
 import com.example._7.game.GameSession;
 import com.example._7.game.RoundManager;
@@ -27,7 +28,11 @@ import com.example._7.ui.component.StorageView;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 public class PreparationScreenController {
@@ -38,7 +43,7 @@ public class PreparationScreenController {
     private RoundManager roundManager;
     private GameApp app;
 
-    @FXML private AnchorPane root;
+    @FXML private BorderPane root;
 
     @FXML private AnchorPane charInfoContainer;
     @FXML private AnchorPane healthBarContainer;
@@ -46,6 +51,11 @@ public class PreparationScreenController {
     @FXML private AnchorPane storageContainer;
     @FXML private AnchorPane backpackContainer;
     @FXML private AnchorPane itemCardContainer;
+    @FXML private ImageView characterPortrait;
+    @FXML private Label lblRoundBadge;
+    @FXML private Label lblShopCount;
+    @FXML private Label lblStorageCount;
+    @FXML private Label lblBackpackCount;
 
     @FXML private Button btnStartBattle;
     @FXML private Button btnRefreshShop;
@@ -173,29 +183,59 @@ public class PreparationScreenController {
         }
 
         Player player = session.getPlayer();
+        if (lblRoundBadge != null) {
+            lblRoundBadge.setText("ROUND " + session.getCurrentRound());
+        }
+        if (characterPortrait != null) {
+            characterPortrait.setImage(loadCharacterImage(player));
+        }
         if (charInfo != null) {
             charInfo.setName(player.getName());
-            charInfo.setCharacterClass(player.getCharacterClass().name());
+            charInfo.setCharacterClass(player.getCharacterClass().getDisplayName());
             charInfo.setGold(player.getGold());
             charInfo.setRound(session.getCurrentRound());
         }
 
         if (healthBar != null) {
-            int maxHp = player.getCharacterStats().getMaxHp();
-            healthBar.update(maxHp, maxHp);
+            var effectiveStats = EffectiveStatsCalculator.calculate(
+                    player.getCharacterStats(),
+                    player.getBackpack().getBattleItems()
+            );
+            healthBar.update(
+                    effectiveStats.maxHp(),
+                    effectiveStats.maxHp(),
+                    effectiveStats.maxStamina(),
+                    effectiveStats.staminaRecoveryRate(),
+                    effectiveStats.maxMana(),
+                    effectiveStats.manaRecoveryRate()
+            );
         }
 
         if (shopPanel != null) {
             Shop shop = session.getCurrentShop();
             shopPanel.setShop(shop);
+            if (lblShopCount != null) {
+                long available = shop == null
+                        ? 0
+                        : shop.getOffers().stream().filter(offer -> !offer.isSold()).count();
+                lblShopCount.setText(String.valueOf(available));
+            }
         }
 
         if (storageView != null) {
             storageView.setStorage(player.getStorage());
+            if (lblStorageCount != null) {
+                lblStorageCount.setText(String.valueOf(player.getStorage().getItems().size()));
+            }
         }
 
         if (backpackView != null) {
             backpackView.setBackpack(player.getBackpack());
+            if (lblBackpackCount != null) {
+                int itemCount = player.getBackpack().getPlacedItems().size();
+                int cellCount = player.getBackpack().getRows() * player.getBackpack().getCols();
+                lblBackpackCount.setText(itemCount + " / " + cellCount);
+            }
         }
     }
 
@@ -507,5 +547,19 @@ public class PreparationScreenController {
         if (itemCard != null) {
             itemCard.setMessage(message);
         }
+    }
+
+    private Image loadCharacterImage(Player player) {
+        if (player == null || player.getCharacterClass() == null) {
+            return null;
+        }
+
+        String fileName = switch (player.getCharacterClass()) {
+            case WARRIOR -> "warrior.png";
+            case RANGER -> "ranger.png";
+            case MAGE -> "mage-transparent.png";
+        };
+        var resource = getClass().getResource("/com/example/_7/images/characters/" + fileName);
+        return resource == null ? null : new Image(resource.toExternalForm());
     }
 }

@@ -19,6 +19,6 @@ public class HealEffect implements ItemEffect {
 
     @Override
     public String getDescription() {
-        return "回復 " + amount + " HP";
+        return "回復 " + amount + " 生命";
     }
 }

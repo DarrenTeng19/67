@@ -2,45 +2,129 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="650.0" prefWidth="1000.0"
-            xmlns="http://javafx.com/javafx/11.0.2"
+<BorderPane fx:id="root" prefHeight="700.0" prefWidth="1100.0"
+            stylesheets="@preparation.css"
+            styleClass="preparation-root"
+            xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example._7.ui.screen.PreparationScreenController">
-    <children>
-        <VBox spacing="10.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
-            <children>
-                <HBox spacing="12.0">
-                    <children>
-                        <AnchorPane fx:id="charInfoContainer" prefWidth="240.0" prefHeight="100.0" />
-                        <AnchorPane fx:id="healthBarContainer" prefWidth="240.0" prefHeight="100.0" />
-                    </children>
-                </HBox>
+    <top>
+        <VBox spacing="12.0" styleClass="top-area">
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="1.0">
+                    <Label text="準備階段" styleClass="screen-title"/>
+                    <Label text="PREPARATION PHASE" styleClass="screen-subtitle"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblRoundBadge" text="ROUND 1" styleClass="round-badge"/>
+            </HBox>
 
-                <HBox spacing="12.0" VBox.vgrow="ALWAYS">
-                    <children>
-                        <AnchorPane fx:id="shopPanelContainer" prefWidth="230.0" prefHeight="440.0" />
-                        <AnchorPane fx:id="storageContainer" prefWidth="260.0" prefHeight="440.0" />
-                        <AnchorPane fx:id="backpackContainer" prefWidth="320.0" prefHeight="440.0" />
-                        <AnchorPane fx:id="itemCardContainer" prefWidth="270.0" prefHeight="440.0" />
-                    </children>
+            <HBox alignment="CENTER_LEFT" spacing="14.0">
+                <StackPane prefHeight="106.0" prefWidth="128.0" styleClass="portrait-card">
+                    <ImageView fx:id="characterPortrait" fitHeight="102.0" fitWidth="124.0"
+                               preserveRatio="true" smooth="true"/>
+                </StackPane>
+                <AnchorPane fx:id="charInfoContainer" prefHeight="106.0" prefWidth="260.0"
+                            styleClass="status-card"/>
+                <AnchorPane fx:id="healthBarContainer" prefHeight="106.0" prefWidth="300.0"
+                            styleClass="status-card"/>
+                <HBox alignment="CENTER" spacing="12.0" HBox.hgrow="ALWAYS" styleClass="guide-card">
+                    <VBox alignment="CENTER" styleClass="key-group">
+                        <Label text="Q" styleClass="key-cap"/>
+                        <Label text="逆轉" styleClass="key-label"/>
+                    </VBox>
+                    <VBox alignment="CENTER" styleClass="key-group">
+                        <Label text="R" styleClass="key-cap"/>
+                        <Label text="順轉" styleClass="key-label"/>
+                    </VBox>
                 </HBox>
-
-                <HBox spacing="8.0">
-                    <children>
-                        <Button fx:id="btnStartBattle" text="Start Battle" onAction="#onStartBattle"/>
-                        <Button fx:id="btnRefreshShop" text="Refresh Shop ($1)" onAction="#onRefreshShop"/>
-                        <Button fx:id="btnAutoCraft" text="自動合成" onAction="#onAutoCraft"/>
-                        <Button fx:id="btnOpenStorage" text="Storage Help" onAction="#onOpenStorage"/>
-                    </children>
-                </HBox>
-            </children>
-            <padding>
-                <Insets top="8" right="8" bottom="8" left="8"/>
-            </padding>
+            </HBox>
         </VBox>
-    </children>
-</AnchorPane>
+    </top>
+
+    <center>
+        <StackPane styleClass="wood-frame">
+            <HBox alignment="TOP_CENTER" spacing="12.0" styleClass="workspace">
+                <VBox prefWidth="210.0" spacing="7.0" styleClass="work-panel, shop-stall">
+                <HBox alignment="CENTER_LEFT" spacing="7.0" styleClass="wood-sign">
+                    <Label text="●" styleClass="iron-nail"/>
+                    <Label text="商店" styleClass="panel-heading, light-heading"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblShopCount" text="0" styleClass="parchment-tag"/>
+                    <Label text="●" styleClass="iron-nail"/>
+                </HBox>
+                <AnchorPane fx:id="shopPanelContainer" VBox.vgrow="ALWAYS"/>
+                <HBox alignment="CENTER" spacing="30.0" styleClass="stall-plank">
+                    <Label text="◆" styleClass="plank-mark"/>
+                    <Label text="◆" styleClass="plank-mark"/>
+                    <Label text="◆" styleClass="plank-mark"/>
+                </HBox>
+                </VBox>
+
+                <VBox prefWidth="225.0" spacing="7.0" styleClass="work-panel, storage-crate">
+                <HBox alignment="CENTER_LEFT" spacing="7.0" styleClass="crate-header">
+                    <Label text="▣" styleClass="crate-mark"/>
+                    <Label text="儲物箱" styleClass="panel-heading"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblStorageCount" text="0" styleClass="cloth-tag"/>
+                </HBox>
+                <AnchorPane fx:id="storageContainer" VBox.vgrow="ALWAYS"/>
+                <HBox alignment="CENTER" styleClass="rope-band">
+                    <Label text="· · · · · · · · · · · ·" styleClass="rope-stitch"/>
+                </HBox>
+                </VBox>
+
+                <VBox prefWidth="310.0" spacing="7.0" styleClass="work-panel, leather-backpack">
+                <HBox alignment="CENTER_LEFT" spacing="7.0" styleClass="leather-flap">
+                    <Label text="✦" styleClass="brass-rivet"/>
+                    <Label text="戰鬥背包" styleClass="panel-heading, light-heading"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblBackpackCount" text="0 / 25" styleClass="brass-tag"/>
+                </HBox>
+                <AnchorPane fx:id="backpackContainer" VBox.vgrow="ALWAYS"/>
+                <HBox alignment="CENTER" spacing="80.0">
+                    <Label text="●" styleClass="brass-rivet"/>
+                    <Label text="●" styleClass="brass-rivet"/>
+                </HBox>
+                </VBox>
+
+                <VBox prefWidth="245.0" spacing="7.0" styleClass="work-panel, adventure-book">
+                <HBox alignment="CENTER_LEFT" spacing="7.0" styleClass="book-header">
+                    <Label text="物品誌" styleClass="book-tab"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Ⅰ" styleClass="page-number"/>
+                </HBox>
+                <AnchorPane fx:id="itemCardContainer" VBox.vgrow="ALWAYS"/>
+                <HBox alignment="CENTER" spacing="5.0">
+                    <Region prefWidth="55.0" styleClass="ink-line"/>
+                    <Label text="❖" styleClass="ink-ornament"/>
+                    <Region prefWidth="55.0" styleClass="ink-line"/>
+                </HBox>
+                </VBox>
+            </HBox>
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" minHeight="70.0" prefHeight="70.0" spacing="10.0" styleClass="action-bar">
+            <Button fx:id="btnRefreshShop" text="↻  刷新  $1" onAction="#onRefreshShop"
+                    styleClass="secondary-action"/>
+            <Button fx:id="btnAutoCraft" text="✦  合成" onAction="#onAutoCraft"
+                    styleClass="secondary-action"/>
+            <Button fx:id="btnOpenStorage" text="▣  儲物箱" onAction="#onOpenStorage"
+                    styleClass="secondary-action"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnStartBattle" text="開始戰鬥  ›" onAction="#onStartBattle"
+                    styleClass="primary-action"/>
+        </HBox>
+    </bottom>
+</BorderPane>

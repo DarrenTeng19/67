@@ -59,7 +59,7 @@ public class GameApp extends Application {
     public void startNewGame(CharacterClass characterClass) {
         CharacterClass selectedClass = characterClass == null ? CharacterClass.WARRIOR : characterClass;
         Player player = new Player(
-                "Player",
+                "玩家",
                 selectedClass,
                 STARTING_GOLD,
                 selectedClass.createInitialStats(),

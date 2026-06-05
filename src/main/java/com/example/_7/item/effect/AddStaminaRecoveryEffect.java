@@ -19,6 +19,6 @@ public class AddStaminaRecoveryEffect implements ItemEffect {
 
     @Override
     public String getDescription() {
-        return "耐力恢復 +" + amountPerSecond + "/s";
+        return "耐力恢復 +" + amountPerSecond + "/秒";
     }
 }

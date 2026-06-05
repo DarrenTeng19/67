@@ -19,6 +19,6 @@ public class AddManaRecoveryEffect implements ItemEffect {
 
     @Override
     public String getDescription() {
-        return "魔力恢復 +" + amountPerSecond + "/s";
+        return "魔力恢復 +" + amountPerSecond + "/秒";
     }
 }

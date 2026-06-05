@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BackpackGridView extends VBox {
-    private static final int CELL_SIZE = 54;
+    private static final int CELL_SIZE = 48;
 
     @FunctionalInterface
     public interface StorageItemDropHandler {
@@ -36,6 +36,7 @@ public class BackpackGridView extends VBox {
     }
 
     private final GridPane grid = new GridPane();
+    private final Label helpLabel = new Label("Q / R  旋轉");
     private Backpack backpack;
     private PlacedItem selectedPlacedItem;
     private PlacedItem draggingPlacedItem;
@@ -51,15 +52,16 @@ public class BackpackGridView extends VBox {
 
     public BackpackGridView() {
         setSpacing(6);
-        setPadding(new Insets(6));
+        setPadding(new Insets(4, 0, 0, 0));
         setFocusTraversable(true);
+        getStyleClass().add("backpack-panel");
+        helpLabel.getStyleClass().add("component-hint");
         grid.setFocusTraversable(true);
 
-        getChildren().add(new Label("Backpack 背包"));
         grid.setHgap(4);
         grid.setVgap(4);
         getChildren().add(grid);
-        getChildren().add(new Label("提示：拖曳物品到格子；按住/選取背包物品時按 R 順時針旋轉、Q 逆時針旋轉。"));
+        getChildren().add(helpLabel);
 
         addEventFilter(KeyEvent.KEY_PRESSED, this::handleRotationKeyPressed);
         grid.addEventFilter(KeyEvent.KEY_PRESSED, this::handleRotationKeyPressed);
@@ -129,21 +131,24 @@ public class BackpackGridView extends VBox {
         cell.setMinSize(CELL_SIZE, CELL_SIZE);
         cell.setMaxSize(CELL_SIZE, CELL_SIZE);
         cell.setFocusTraversable(true);
+        cell.getStyleClass().add("backpack-cell");
+        cell.getStyleClass().add((position.row() + position.col()) % 2 == 0
+                ? "backpack-cell-light"
+                : "backpack-cell-dark");
 
         Optional<PlacedItem> placedOptional = backpack.getPlacedItemAt(position);
         PlacedItem placedItem = placedOptional.orElse(null);
 
-        String baseStyle = "-fx-border-color: #999; -fx-background-color: #eeeeee;";
         if (placedItem != null) {
-            baseStyle = "-fx-border-color: #555; -fx-background-color: #cfe8ff;";
+            cell.getStyleClass().add("backpack-cell-occupied");
             Label label = new Label(cellText(placedItem));
             label.setWrapText(true);
+            label.getStyleClass().add("backpack-item-label");
             cell.getChildren().add(label);
         }
         if (placedItem != null && placedItem == selectedPlacedItem) {
-            baseStyle = "-fx-border-color: #ff9900; -fx-border-width: 3; -fx-background-color: #ffe2b6;";
+            cell.getStyleClass().add("backpack-cell-selected");
         }
-        cell.setStyle(baseStyle);
 
         cell.setOnMousePressed(event -> {
             requestFocus();

@@ -24,9 +24,10 @@ public class ShopPanel extends VBox {
 
     public ShopPanel() {
         setSpacing(6);
-        setPadding(new Insets(6));
-        getChildren().add(new Label("Shop 商店"));
-        list.setPrefHeight(260);
+        setPadding(new Insets(4, 0, 0, 0));
+        getStyleClass().add("shop-panel");
+        list.setPrefHeight(230);
+        list.setMinHeight(150);
         list.setCellFactory(view -> new ShopOfferCell());
 
         list.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -44,8 +45,7 @@ public class ShopPanel extends VBox {
         btnBuy.setMaxWidth(Double.MAX_VALUE);
         btnBuy.setOnAction(event -> buySelected());
 
-        HBox hint = new HBox(new Label("雙擊商品也可以購買"));
-        getChildren().addAll(list, btnBuy, hint);
+        getChildren().addAll(list, btnBuy);
     }
 
     public void setShop(Shop shop) {
@@ -91,7 +91,6 @@ public class ShopPanel extends VBox {
             String prefix = offer.isSold() ? "[已售出] " : "";
             setText(prefix + item.getName()
                     + "  $" + item.getPrice()
-                    + "  R" + item.getRarity()
                     + "  " + item.getShape().width() + "x" + item.getShape().height());
             setStyle(offer.isSold()
                     ? "-fx-opacity: 0.45; -fx-text-fill: #777;"
