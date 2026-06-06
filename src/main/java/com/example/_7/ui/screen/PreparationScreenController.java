@@ -256,8 +256,7 @@ public class PreparationScreenController {
         }
 
         if (backpackView != null) {
-            backpackView.setBackpack(player.getBackpack());
-            backpackView.setSelectedPlacedItem(selectedPlacedItem);  // ← 新增這行
+            backpackView.setState(player.getBackpack(), selectedPlacedItem);
             if (lblBackpackCount != null) {
                 int occupiedCellCount = player.getBackpack().getOccupiedCellCount();
                 int cellCount = player.getBackpack().getRows() * player.getBackpack().getCols();
@@ -387,7 +386,6 @@ public class PreparationScreenController {
         } else {
             showMessage("這個位置放不下「" + placedItem.getItem().getName() + "」。");
         }
-        refreshUI();
         return success;
     }
 
@@ -456,7 +454,6 @@ public class PreparationScreenController {
             showMessage("「" + placedItem.getItem().getName() + "」旋轉後會超出背包或重疊，因此無法旋轉。");
         }
 
-        refreshUI();
         return success;
     }
 

@@ -6,6 +6,7 @@ import com.example._7.inventory.PlacedItem;
 import com.example._7.inventory.Rotation;
 import com.example._7.item.Item;
 import com.example._7.item.shape.ItemShape;
+import com.example._7.ui.util.ItemImageCache;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -21,7 +22,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import java.net.URL;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -80,6 +80,12 @@ public class BackpackGridView extends VBox {
 
     public void setBackpack(Backpack backpack) {
         this.backpack = backpack;
+        redraw();
+    }
+
+    public void setState(Backpack backpack, PlacedItem selectedPlacedItem) {
+        this.backpack = backpack;
+        this.selectedPlacedItem = selectedPlacedItem;
         redraw();
     }
 
@@ -237,7 +243,7 @@ public class BackpackGridView extends VBox {
         node.setMaxHeight(nodeHeight);
 
         try {
-            Image img = findItemImage(placedItem.getItem());
+            Image img = ItemImageCache.get(placedItem.getItem());
 
             if (img != null) {
                 double angle = 0.0;
@@ -356,21 +362,6 @@ public class BackpackGridView extends VBox {
         }
         Platform.runLater(this::requestFocus);
         event.consume();
-    }
-
-    private Image findItemImage(Item item) {
-        if (item == null || item.getId() == null) return null;
-        String base = "/com/example/_7/images/items/" + item.getId();
-        String[] exts = {".png", ".jpg", ".jpeg"};
-        for (String ext : exts) {
-            URL res = getClass().getResource(base + ext);
-            if (res != null) {
-                try {
-                    return new Image(res.toExternalForm(), false);
-                } catch (Exception ignored) {}
-            }
-        }
-        return null;
     }
 
     private ImageView createCoveringImageView(Image img, int targetWidth, int targetHeight, double rotateAngle) {

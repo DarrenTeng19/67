@@ -104,12 +104,14 @@ public class StorageView extends VBox {
     }
 
     public void setStorage(Storage storage) {
+        var items = storage == null ? java.util.List.<Item>of() : storage.getItems();
+        if (list.getItems().equals(items)) {
+            return;
+        }
+
         Item selected = getSelectedItem();
         int selectedIndex = list.getSelectionModel().getSelectedIndex();
-        list.getItems().clear();
-        if (storage != null) {
-            list.getItems().addAll(storage.getItems());
-        }
+        list.getItems().setAll(items);
 
         if (selected != null && list.getItems().contains(selected)) {
             list.getSelectionModel().select(selected);
