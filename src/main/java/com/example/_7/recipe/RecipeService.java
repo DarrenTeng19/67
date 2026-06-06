@@ -106,7 +106,9 @@ public class RecipeService {
     }
 
     private boolean isCraftMaterial(Item item) {
-        return item != null && item.getRoles().contains(ItemRole.COMPONENT);
+        return item != null
+                && (item.getRoles().contains(ItemRole.COMPONENT)
+                || recipeCatalog.isRecipeIngredient(item.getId()));
     }
 
     private boolean removeCandidate(Storage storage, Backpack backpack, CraftCandidate candidate) {

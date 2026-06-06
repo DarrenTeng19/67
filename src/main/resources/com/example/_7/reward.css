@@ -1,0 +1,157 @@
+.reward-root {
+    -fx-background-image: url("images/backgrounds/preparation-parchment.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-font-family: "Microsoft JhengHei", "Segoe UI", sans-serif;
+}
+
+.label {
+    -fx-text-fill: #4d392b;
+}
+
+.reward-header {
+    -fx-padding: 14px 26px 10px 26px;
+    -fx-background-color: rgba(239, 218, 169, 0.48);
+    -fx-border-color: transparent transparent rgba(91, 53, 31, 0.72) transparent;
+    -fx-border-width: 0 0 4px 0;
+}
+
+.screen-title {
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
+    -fx-font-size: 28px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #6f2c22;
+    -fx-effect: dropshadow(one-pass-box, rgba(255, 238, 195, 0.72), 1, 0, 1, 1);
+}
+
+.screen-subtitle {
+    -fx-font-family: "Georgia", "Segoe UI";
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-letter-spacing: 3px;
+    -fx-text-fill: #8b4b2f;
+}
+
+.victory-badge {
+    -fx-padding: 7px 16px;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #fff5d8;
+    -fx-background-color: linear-gradient(to bottom, #9d7d32, #6f541f);
+    -fx-background-radius: 15px;
+    -fx-border-color: #dabb68;
+    -fx-border-radius: 15px;
+}
+
+.reward-card {
+    -fx-padding: 22px 34px 23px 34px;
+    -fx-background-color:
+        linear-gradient(to bottom, rgba(249, 234, 194, 0.97), rgba(217, 195, 145, 0.97));
+    -fx-background-radius: 5px;
+    -fx-border-color: #c19a4f #665128 #493a1c #a98440;
+    -fx-border-width: 3px 4px 6px 4px;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(61, 38, 23, 0.38), 16, 0.18, 1, 7);
+}
+
+.reward-title {
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
+    -fx-font-size: 44px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #85621f;
+    -fx-effect: dropshadow(one-pass-box, rgba(255, 247, 211, 0.92), 2, 0.25, 1, 2);
+}
+
+.reward-summary {
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #785c35;
+}
+
+.portrait-frame {
+    -fx-background-color:
+        radial-gradient(center 50% 48%, radius 75%, rgba(239, 219, 164, 0.48), rgba(77, 58, 36, 0.74));
+    -fx-background-radius: 4px;
+    -fx-border-color: #c5a25e #614b2d #44351f #a8874b;
+    -fx-border-width: 2px 3px 5px 3px;
+    -fx-border-radius: 4px;
+}
+
+.portrait-mark {
+    -fx-translate-y: 83px;
+    -fx-padding: 5px 13px;
+    -fx-font-family: "Georgia";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #fff5cf;
+    -fx-background-color: rgba(119, 89, 28, 0.92);
+    -fx-background-radius: 3px;
+    -fx-rotate: -4;
+}
+
+.identity-panel {
+    -fx-padding: 8px 12px;
+    -fx-background-color: rgba(130, 98, 39, 0.13);
+    -fx-border-color: transparent transparent #aa874b transparent;
+    -fx-border-width: 0 0 2px 0;
+}
+
+.player-name {
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #633e2e;
+}
+
+.player-class {
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #80624d;
+}
+
+.stat-row {
+    -fx-padding: 9px 13px;
+    -fx-background-color: rgba(249, 235, 198, 0.75);
+    -fx-background-radius: 3px;
+    -fx-border-color: #ad875b;
+    -fx-border-width: 1px 1px 2px 1px;
+    -fx-border-radius: 3px;
+}
+
+.reward-row {
+    -fx-border-color: #b4954d;
+}
+
+.stat-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #71513c;
+}
+
+.stat-value {
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #71352c;
+}
+
+.gold-value {
+    -fx-text-fill: #88661f;
+}
+
+.continue-button {
+    -fx-min-width: 170px;
+    -fx-padding: 10px 20px;
+    -fx-font-family: "Microsoft JhengHei", "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #fff7dc;
+    -fx-background-color: linear-gradient(to bottom, #a27d32, #71551e);
+    -fx-background-radius: 4px;
+    -fx-border-color: #d2af5e #5d471b #493613 #987326;
+    -fx-border-width: 1px 2px 4px 2px;
+    -fx-border-radius: 4px;
+    -fx-cursor: hand;
+}

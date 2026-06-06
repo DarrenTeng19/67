@@ -152,7 +152,6 @@ public class PreparationScreenController {
         });
 
         storageView.setOnAutoPlaceRequested(this::autoPlaceStorageItem);
-        storageView.setOnSellRequested(this::sellStorageItem);
         storageView.setOnRotationChanged(rotation -> {
             draggedStorageRotation = rotation == null ? Rotation.DEGREE_0 : rotation;
             if (selectedStorageItem != null) {
