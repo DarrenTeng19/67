@@ -6,6 +6,7 @@ import com.example._7.inventory.PlacedItem;
 import com.example._7.inventory.Rotation;
 import com.example._7.item.Item;
 import com.example._7.item.shape.ItemShape;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -224,6 +225,7 @@ public class BackpackGridView extends VBox {
 
         StackPane node = new StackPane();
         node.setAlignment(Pos.CENTER);
+        node.setFocusTraversable(true);
         node.getStyleClass().add("backpack-item-node");
         double nodeWidth = CELL_SIZE * colspan + (colspan - 1) * grid.getHgap();
         double nodeHeight = CELL_SIZE * rowspan + (rowspan - 1) * grid.getVgap();
@@ -247,6 +249,7 @@ public class BackpackGridView extends VBox {
                 ImageView iv = createCoveringImageView(img, (int) nodeWidth, (int) nodeHeight, angle);
                 if (iv != null) {
                     StackPane.setAlignment(iv, Pos.CENTER);
+                    iv.setMouseTransparent(true);
                     node.getChildren().add(iv);
                 } else {
                     node.getChildren().add(new Label(placedItem.getItem().getName()));
@@ -268,6 +271,7 @@ public class BackpackGridView extends VBox {
         updateNodeSelectionStyle(node, placedItem);
 
         node.setOnMousePressed(evt -> {
+            node.requestFocus();
             selectedPlacedItem = placedItem;
             heldPlacedItem = placedItem;
             if (onPlacedItemSelected != null) onPlacedItemSelected.accept(placedItem);
@@ -275,12 +279,14 @@ public class BackpackGridView extends VBox {
         });
 
         node.setOnMouseClicked(evt -> {
+            node.requestFocus();
             selectedPlacedItem = placedItem;
             if (onPlacedItemSelected != null) onPlacedItemSelected.accept(placedItem);
             evt.consume();
         });
 
         node.setOnDragDetected(evt -> {
+            node.requestFocus();
             selectedPlacedItem = placedItem;
             heldPlacedItem = placedItem;
             draggingPlacedItem = placedItem;
@@ -333,6 +339,7 @@ public class BackpackGridView extends VBox {
             Item draggedStorageItem = draggedStorageItemSupplier == null ? null : draggedStorageItemSupplier.get();
             if (draggedStorageItem != null && onDraggedStorageItemRotationRequested != null) {
                 onDraggedStorageItemRotationRequested.accept(clockwise);
+                Platform.runLater(this::requestFocus);
                 event.consume();
             }
             return;
@@ -347,6 +354,7 @@ public class BackpackGridView extends VBox {
             selectedPlacedItem = target;
             redraw();
         }
+        Platform.runLater(this::requestFocus);
         event.consume();
     }
 
