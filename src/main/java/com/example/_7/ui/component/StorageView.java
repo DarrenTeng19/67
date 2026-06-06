@@ -60,6 +60,8 @@ public class StorageView extends VBox {
                 if (onItemSelected != null) {
                     onItemSelected.accept(newValue);
                 }
+            } else {
+                heldItem = null;
             }
             list.refresh();
         });
@@ -103,12 +105,17 @@ public class StorageView extends VBox {
 
     public void setStorage(Storage storage) {
         Item selected = getSelectedItem();
+        int selectedIndex = list.getSelectionModel().getSelectedIndex();
         list.getItems().clear();
         if (storage != null) {
             list.getItems().addAll(storage.getItems());
         }
+
         if (selected != null && list.getItems().contains(selected)) {
             list.getSelectionModel().select(selected);
+        } else if (selectedIndex >= 0 && !list.getItems().isEmpty()) {
+            int nextIndex = Math.min(selectedIndex, list.getItems().size() - 1);
+            list.getSelectionModel().select(nextIndex);
         }
     }
 
