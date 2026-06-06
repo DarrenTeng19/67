@@ -13,6 +13,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
@@ -32,8 +33,9 @@ public class ShopPanel extends VBox {
         setSpacing(6);
         setPadding(new Insets(4, 0, 0, 0));
         getStyleClass().add("shop-panel");
-        list.setPrefHeight(230);
         list.setMinHeight(150);
+        list.setMaxHeight(Double.MAX_VALUE);
+        VBox.setVgrow(list, Priority.ALWAYS);
         list.setCellFactory(view -> new ShopOfferCell());
 
         list.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {

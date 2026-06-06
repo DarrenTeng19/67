@@ -49,7 +49,7 @@
     <center>
         <StackPane styleClass="wood-frame">
             <HBox alignment="TOP_CENTER" spacing="12.0" styleClass="workspace">
-                <VBox prefWidth="210.0" spacing="7.0" styleClass="work-panel, shop-stall">
+                <VBox prefWidth="260.0" spacing="7.0" styleClass="work-panel, shop-stall">
                 <HBox alignment="CENTER_LEFT" spacing="7.0" styleClass="wood-sign">
                     <Label text="●" styleClass="iron-nail"/>
                     <Label text="商店" styleClass="panel-heading, light-heading"/>
@@ -65,7 +65,7 @@
                 </HBox>
                 </VBox>
 
-                <VBox prefWidth="225.0" spacing="7.0" styleClass="work-panel, storage-crate">
+                <VBox prefWidth="215.0" spacing="7.0" styleClass="work-panel, storage-crate">
                 <HBox alignment="CENTER_LEFT" spacing="7.0" styleClass="crate-header">
                     <Label text="▣" styleClass="crate-mark"/>
                     <Label text="儲物箱" styleClass="panel-heading"/>
@@ -78,7 +78,7 @@
                 </HBox>
                 </VBox>
 
-                <VBox prefWidth="310.0" spacing="7.0" styleClass="work-panel, leather-backpack">
+                <VBox prefWidth="295.0" spacing="7.0" styleClass="work-panel, leather-backpack">
                 <HBox alignment="CENTER_LEFT" spacing="7.0" styleClass="leather-flap">
                     <Label text="✦" styleClass="brass-rivet"/>
                     <Label text="戰鬥背包" styleClass="panel-heading, light-heading"/>
@@ -92,7 +92,7 @@
                 </HBox>
                 </VBox>
 
-                <VBox prefWidth="245.0" spacing="7.0" styleClass="work-panel, adventure-book">
+                <VBox prefWidth="220.0" spacing="7.0" styleClass="work-panel, adventure-book">
                 <HBox alignment="CENTER_LEFT" spacing="7.0" styleClass="book-header">
                     <Label text="物品誌" styleClass="book-tab"/>
                     <Region HBox.hgrow="ALWAYS"/>
