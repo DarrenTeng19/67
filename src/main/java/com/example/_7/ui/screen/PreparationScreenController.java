@@ -12,6 +12,7 @@ import com.example._7.inventory.PlacedItem;
 import com.example._7.inventory.Rotation;
 import com.example._7.inventory.Storage;
 import com.example._7.item.Item;
+import com.example._7.item.ItemAffinity;
 import com.example._7.item.ItemCatalog;
 import com.example._7.recipe.Recipe;
 import com.example._7.recipe.RecipeCatalog;
@@ -26,17 +27,22 @@ import com.example._7.ui.component.ItemCardView;
 import com.example._7.ui.component.RecycleBinView;
 import com.example._7.ui.component.ShopPanel;
 import com.example._7.ui.component.StorageView;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -557,7 +563,7 @@ public class PreparationScreenController {
                 .sorted(Comparator.comparing(Item::getAffinity).thenComparing(Item::getRarity))
                 .map(item -> String.format(
                         "[%s] %s  |  $%d  |  稀有度 %d  |  %dx%d%n%s",
-                        item.getAffinity(),
+                        affinityName(item.getAffinity()),
                         item.getName(),
                         item.getPrice(),
                         item.getRarity(),
@@ -568,6 +574,15 @@ public class PreparationScreenController {
                 .collect(Collectors.joining("\n\n"));
 
         showScrollableInformation("道具一覽", content);
+    }
+
+    private String affinityName(ItemAffinity affinity) {
+        return switch (affinity) {
+            case COMMON -> "通用";
+            case WARRIOR -> "戰士";
+            case RANGER -> "遊俠";
+            case MAGE -> "魔法師";
+        };
     }
 
     @FXML
@@ -595,17 +610,67 @@ public class PreparationScreenController {
     }
 
     private void showScrollableInformation(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(title);
+        Stage dialog = new Stage();
+        dialog.setTitle(title);
+        dialog.initModality(Modality.WINDOW_MODAL);
+        if (root != null && root.getScene() != null) {
+            dialog.initOwner(root.getScene().getWindow());
+        }
 
-        TextArea textArea = new TextArea(content);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setPrefSize(720, 480);
-        alert.getDialogPane().setContent(textArea);
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        alert.showAndWait();
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("archive-title");
+
+        Label subtitleLabel = new Label("ADVENTURER'S ARCHIVE");
+        subtitleLabel.getStyleClass().add("archive-subtitle");
+
+        Region ornamentLine = new Region();
+        ornamentLine.getStyleClass().add("archive-ornament-line");
+
+        Label ornament = new Label("❖");
+        ornament.getStyleClass().add("archive-ornament");
+        HBox ornamentRow = new HBox(10, ornamentLine, ornament);
+        ornamentRow.setAlignment(Pos.CENTER);
+        HBox.setHgrow(ornamentLine, javafx.scene.layout.Priority.ALWAYS);
+
+        Region secondLine = new Region();
+        secondLine.getStyleClass().add("archive-ornament-line");
+        ornamentRow.getChildren().add(secondLine);
+        HBox.setHgrow(secondLine, javafx.scene.layout.Priority.ALWAYS);
+
+        Label contentLabel = new Label(content);
+        contentLabel.setWrapText(true);
+        contentLabel.setMaxWidth(Double.MAX_VALUE);
+        contentLabel.getStyleClass().add("archive-content");
+
+        VBox paperContent = new VBox(contentLabel);
+        paperContent.setPadding(new Insets(8, 18, 18, 18));
+        paperContent.getStyleClass().add("archive-paper-content");
+
+        ScrollPane scrollPane = new ScrollPane(paperContent);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefViewportWidth(700);
+        scrollPane.setPrefViewportHeight(430);
+        scrollPane.getStyleClass().add("archive-scroll");
+
+        Button closeButton = new Button("關閉");
+        closeButton.getStyleClass().add("archive-close-button");
+        closeButton.setOnAction(event -> dialog.close());
+
+        VBox layout = new VBox(8, titleLabel, subtitleLabel, ornamentRow, scrollPane, closeButton);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(24, 30, 22, 30));
+        layout.getStyleClass().add("archive-root");
+
+        Scene scene = new Scene(layout, 780, 600);
+        var stylesheet = getClass().getResource("/com/example/_7/information-dialog.css");
+        if (stylesheet != null) {
+            scene.getStylesheets().add(stylesheet.toExternalForm());
+        }
+
+        dialog.setScene(scene);
+        dialog.setMinWidth(650);
+        dialog.setMinHeight(500);
+        dialog.showAndWait();
     }
 
     @FXML
