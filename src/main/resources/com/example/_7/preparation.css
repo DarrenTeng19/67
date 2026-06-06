@@ -593,3 +593,16 @@
     -fx-font-size: 9px;
     -fx-text-fill: #9a8068;
 }
+
+.backpack-item-node {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.backpack-item-node:selected,
+.backpack-item-node.selected {
+    -fx-border-color: #d4af37;
+    -fx-border-width: 3;
+    -fx-border-insets: 0;
+    -fx-effect: dropshadow(gaussian, rgba(212, 175, 55, 0.6), 6, 0.3, 0, 0);
+}

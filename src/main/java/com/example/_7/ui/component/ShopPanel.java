@@ -5,16 +5,22 @@ import com.example._7.shop.Shop;
 import com.example._7.shop.ShopOffer;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
 
+/**
+ * 商店面板：顯示每個 ShopOffer 的縮圖、名稱、價格與尺寸資訊。
+ * 圖片檔案請放在 resources/com/example/_7/images/items/<itemId>.png (或 .jpg)
+ */
 public class ShopPanel extends VBox {
     private final ListView<ShopOffer> list = new ListView<>(FXCollections.observableArrayList());
     private final Button btnBuy = new Button("購買選取商品");
@@ -37,7 +43,7 @@ public class ShopPanel extends VBox {
         });
 
         list.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+            if (event.getClickCount() == 2) {
                 buySelected();
             }
         });
@@ -78,23 +84,65 @@ public class ShopPanel extends VBox {
     }
 
     private static class ShopOfferCell extends ListCell<ShopOffer> {
+        private final HBox root = new HBox(8);
+        private final ImageView imageView = new ImageView();
+        private final VBox textBox = new VBox(2);
+        private final Label nameLabel = new Label();
+        private final Label metaLabel = new Label();
+
+        ShopOfferCell() {
+            root.setAlignment(Pos.CENTER_LEFT);
+            imageView.setFitWidth(48);
+            imageView.setFitHeight(48);
+            imageView.setPreserveRatio(true);
+            imageView.getStyleClass().add("shop-item-image");
+            textBox.getChildren().addAll(nameLabel, metaLabel);
+            root.getChildren().addAll(imageView, textBox);
+            setPadding(new Insets(6));
+        }
+
         @Override
         protected void updateItem(ShopOffer offer, boolean empty) {
             super.updateItem(offer, empty);
             if (empty || offer == null || offer.getItem() == null) {
                 setText(null);
+                setGraphic(null);
                 setStyle("");
                 return;
             }
 
             Item item = offer.getItem();
             String prefix = offer.isSold() ? "[已售出] " : "";
-            setText(prefix + item.getName()
-                    + "  $" + item.getPrice()
-                    + "  " + item.getShape().width() + "x" + item.getShape().height());
+            nameLabel.setText(prefix + item.getName());
+            metaLabel.setText("$" + item.getPrice() + "    " + item.getShape().width() + "x" + item.getShape().height());
+
+            Image img = loadItemImage(item);
+            if (img != null) {
+                imageView.setImage(img);
+            } else {
+                imageView.setImage(null);
+            }
+
+            setGraphic(root);
             setStyle(offer.isSold()
                     ? "-fx-opacity: 0.38; -fx-text-fill: #785f46; -fx-font-weight: 700;"
                     : "");
+        }
+
+        private Image loadItemImage(Item item) {
+            if (item == null || item.getId() == null) return null;
+            String path = "/com/example/_7/images/items/" + item.getId() + ".png";
+            var res = getClass().getResource(path);
+            if (res == null) {
+                // try jpg
+                res = getClass().getResource("/com/example/_7/images/items/" + item.getId() + ".jpg");
+                if (res == null) return null;
+            }
+            try {
+                return new Image(res.toExternalForm(), 48, 48, true, true);
+            } catch (Exception e) {
+                return null;
+            }
         }
     }
 }

@@ -244,6 +244,7 @@ public class PreparationScreenController {
 
         if (backpackView != null) {
             backpackView.setBackpack(player.getBackpack());
+            backpackView.setSelectedPlacedItem(selectedPlacedItem);  // ← 新增這行
             if (lblBackpackCount != null) {
                 int itemCount = player.getBackpack().getPlacedItems().size();
                 int cellCount = player.getBackpack().getRows() * player.getBackpack().getCols();
