@@ -53,6 +53,7 @@ public class BattleScreenController {
 
     @FXML private Label lblRound;
     @FXML private Label lblBattleState;
+    @FXML private Label lblBattleTimer;
     @FXML private Label lblPlayerName;
     @FXML private Label lblPlayerClass;
     @FXML private Label lblEnemyName;
@@ -107,6 +108,7 @@ public class BattleScreenController {
         previousPlayerTotal = totalDurability(player);
         previousEnemyTotal = totalDurability(session.getCurrentEnemy());
         updateUI();
+        updateBattleTimer();
         addLog("第 " + session.getCurrentRound() + " 回合，戰鬥開始。");
         startLoop();
     }
@@ -129,6 +131,7 @@ public class BattleScreenController {
                 processBattleEvents();
                 animateUnreportedDamage();
                 updateUI();
+                updateBattleTimer();
                 finishBattleIfNeeded();
             }
         };
@@ -323,19 +326,25 @@ public class BattleScreenController {
     }
 
     private void finishBattleIfNeeded() {
-        boolean playerDead = session.getPlayer().isDead();
-        boolean enemyDead = session.getCurrentEnemy().isDead();
-        if (!playerDead && !enemyDead) {
+        if (!engine.isBattleEnded()) {
             return;
         }
 
         timer.stop();
         updateUI();
-        lblBattleState.setText(enemyDead && !playerDead ? "戰鬥勝利" : "戰鬥失敗");
+        updateBattleTimer();
+        boolean playerWon = engine.getWinner() == session.getPlayer();
+        if (engine.hasTimedOut()) {
+            lblBattleState.setText("時間到，戰鬥失敗");
+            setLastAction("未能在 2 分鐘內擊敗敵人");
+            addLog("時間到，我方戰敗。");
+        } else {
+            lblBattleState.setText(playerWon ? "戰鬥勝利" : "戰鬥失敗");
+        }
 
         PauseTransition delay = new PauseTransition(Duration.millis(650));
         delay.setOnFinished(event -> {
-            if (enemyDead && !playerDead) {
+            if (playerWon) {
                 roundManager.handleBattleVictory(session);
                 if (session.getCurrentPhase() == GamePhase.REWARD) {
                     app.getSceneManager().showReward(session, roundManager);
@@ -348,6 +357,13 @@ public class BattleScreenController {
             }
         });
         delay.play();
+    }
+
+    private void updateBattleTimer() {
+        int remainingSeconds = (int) Math.ceil(engine.getRemainingBattleSeconds());
+        int minutes = remainingSeconds / 60;
+        int seconds = remainingSeconds % 60;
+        lblBattleTimer.setText(String.format("%02d:%02d", minutes, seconds));
     }
 
     private void setLastAction(String message) {

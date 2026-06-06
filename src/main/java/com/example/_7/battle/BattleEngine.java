@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Random;
 
 public class BattleEngine {
+    public static final double BATTLE_TIME_LIMIT_SECONDS = 120.0;
     private static final double MIN_COOLDOWN_SECONDS = 0.1;
     private static final double STATUS_TICK_SECONDS = 1.0;
 
@@ -54,6 +55,8 @@ public class BattleEngine {
 
     private boolean battleStarted;
     private boolean battleEnded;
+    private boolean timedOut;
+    private double elapsedBattleSeconds;
     private Combatant winner;
 
     public BattleEngine(Combatant player, Combatant enemy) {
@@ -79,6 +82,8 @@ public class BattleEngine {
 
         this.battleStarted = false;
         this.battleEnded = false;
+        this.timedOut = false;
+        this.elapsedBattleSeconds = 0.0;
         this.winner = null;
         this.pendingEvents.clear();
     }
@@ -142,6 +147,8 @@ public class BattleEngine {
 
         this.battleStarted = true;
         this.battleEnded = false;
+        this.timedOut = false;
+        this.elapsedBattleSeconds = 0.0;
         this.winner = null;
 
         checkBattleEnd();
@@ -152,6 +159,15 @@ public class BattleEngine {
             return;
         }
         if (deltaTime <= 0) {
+            return;
+        }
+
+        elapsedBattleSeconds = Math.min(
+                BATTLE_TIME_LIMIT_SECONDS,
+                elapsedBattleSeconds + deltaTime
+        );
+        if (elapsedBattleSeconds >= BATTLE_TIME_LIMIT_SECONDS) {
+            endBattleByTimeout();
             return;
         }
 
@@ -168,6 +184,13 @@ public class BattleEngine {
         triggerItems(enemy, player, deltaTime);
 
         checkBattleEnd();
+    }
+
+    private void endBattleByTimeout() {
+        timedOut = true;
+        player.getBattleState().setCurrentHp(0);
+        battleEnded = true;
+        winner = enemy;
     }
 
     private void initializeItemRuntimeStates(Combatant combatant) {
@@ -354,6 +377,18 @@ public class BattleEngine {
 
     public Combatant getWinner() {
         return winner;
+    }
+
+    public boolean hasTimedOut() {
+        return timedOut;
+    }
+
+    public double getElapsedBattleSeconds() {
+        return elapsedBattleSeconds;
+    }
+
+    public double getRemainingBattleSeconds() {
+        return Math.max(0.0, BATTLE_TIME_LIMIT_SECONDS - elapsedBattleSeconds);
     }
 
     public Combatant getPlayer() {

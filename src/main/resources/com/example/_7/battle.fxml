@@ -26,6 +26,7 @@
             </VBox>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="lblRound" text="ROUND 1 / 5" styleClass="round-badge"/>
+            <Label fx:id="lblBattleTimer" text="02:00" styleClass="round-badge"/>
             <Label fx:id="lblBattleState" text="戰鬥進行中" styleClass="live-badge"/>
         </HBox>
     </top>
