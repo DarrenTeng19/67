@@ -3,6 +3,7 @@ package com.example._7.ui.component;
 import com.example._7.item.Item;
 import com.example._7.shop.Shop;
 import com.example._7.shop.ShopOffer;
+import com.example._7.ui.util.ItemImageCache;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,6 +14,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 import java.util.function.Consumer;
@@ -32,8 +34,9 @@ public class ShopPanel extends VBox {
         setSpacing(6);
         setPadding(new Insets(4, 0, 0, 0));
         getStyleClass().add("shop-panel");
-        list.setPrefHeight(230);
         list.setMinHeight(150);
+        list.setMaxHeight(Double.MAX_VALUE);
+        VBox.setVgrow(list, Priority.ALWAYS);
         list.setCellFactory(view -> new ShopOfferCell());
 
         list.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
@@ -55,9 +58,12 @@ public class ShopPanel extends VBox {
     }
 
     public void setShop(Shop shop) {
-        list.getItems().clear();
-        if (shop == null) return;
-        list.getItems().addAll(shop.getOffers());
+        var offers = shop == null ? java.util.List.<ShopOffer>of() : shop.getOffers();
+        if (!list.getItems().equals(offers)) {
+            list.getItems().setAll(offers);
+        } else {
+            list.refresh();
+        }
     }
 
     public void setOnBuyOffer(Consumer<ShopOffer> onBuyOffer) {
@@ -116,7 +122,7 @@ public class ShopPanel extends VBox {
             nameLabel.setText(prefix + item.getName());
             metaLabel.setText("$" + item.getPrice() + "    " + item.getShape().width() + "x" + item.getShape().height());
 
-            Image img = loadItemImage(item);
+            Image img = ItemImageCache.get(item);
             if (img != null) {
                 imageView.setImage(img);
             } else {
@@ -129,20 +135,5 @@ public class ShopPanel extends VBox {
                     : "");
         }
 
-        private Image loadItemImage(Item item) {
-            if (item == null || item.getId() == null) return null;
-            String path = "/com/example/_7/images/items/" + item.getId() + ".png";
-            var res = getClass().getResource(path);
-            if (res == null) {
-                // try jpg
-                res = getClass().getResource("/com/example/_7/images/items/" + item.getId() + ".jpg");
-                if (res == null) return null;
-            }
-            try {
-                return new Image(res.toExternalForm(), 48, 48, true, true);
-            } catch (Exception e) {
-                return null;
-            }
-        }
     }
 }

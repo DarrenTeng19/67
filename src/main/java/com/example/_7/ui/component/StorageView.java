@@ -4,6 +4,8 @@ import com.example._7.inventory.Rotation;
 import com.example._7.inventory.Storage;
 import com.example._7.inventory.PlacedItem;
 import com.example._7.item.Item;
+import com.example._7.item.shape.ItemShape;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -58,7 +60,10 @@ public class StorageView extends VBox {
                 if (onItemSelected != null) {
                     onItemSelected.accept(newValue);
                 }
+            } else {
+                heldItem = null;
             }
+            list.refresh();
         });
 
         list.addEventFilter(KeyEvent.KEY_PRESSED, this::handleRotationKeyPressed);
@@ -99,13 +104,20 @@ public class StorageView extends VBox {
     }
 
     public void setStorage(Storage storage) {
-        Item selected = getSelectedItem();
-        list.getItems().clear();
-        if (storage != null) {
-            list.getItems().addAll(storage.getItems());
+        var items = storage == null ? java.util.List.<Item>of() : storage.getItems();
+        if (list.getItems().equals(items)) {
+            return;
         }
+
+        Item selected = getSelectedItem();
+        int selectedIndex = list.getSelectionModel().getSelectedIndex();
+        list.getItems().setAll(items);
+
         if (selected != null && list.getItems().contains(selected)) {
             list.getSelectionModel().select(selected);
+        } else if (selectedIndex >= 0 && !list.getItems().isEmpty()) {
+            int nextIndex = Math.min(selectedIndex, list.getItems().size() - 1);
+            list.getSelectionModel().select(nextIndex);
         }
     }
 
@@ -140,6 +152,7 @@ public class StorageView extends VBox {
     private void setCurrentDragRotation(Rotation rotation, boolean notify) {
         currentDragRotation = rotation == null ? Rotation.DEGREE_0 : rotation;
         updateRotationHint();
+        list.refresh();
         if (notify && onRotationChanged != null) {
             onRotationChanged.accept(currentDragRotation);
         }
@@ -217,6 +230,7 @@ public class StorageView extends VBox {
         }
 
         rotateCurrentDragRotation(event.getCode() == KeyCode.R);
+        Platform.runLater(list::requestFocus);
         event.consume();
     }
 
@@ -307,9 +321,13 @@ public class StorageView extends VBox {
                 setText(null);
                 return;
             }
+            Rotation displayRotation = item == getSelectedItem()
+                    ? currentDragRotation
+                    : Rotation.DEGREE_0;
+            ItemShape displayShape = item.getShape().rotated(displayRotation);
             setText(item.getName()
                     + "  $" + item.getPrice()
-                    + "  " + item.getShape().width() + "x" + item.getShape().height());
+                    + "  " + displayShape.width() + "x" + displayShape.height());
         }
     }
 }

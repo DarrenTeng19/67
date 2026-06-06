@@ -1,0 +1,88 @@
+.archive-root {
+    -fx-background-image: url("images/backgrounds/preparation-parchment.png");
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-font-family: "Microsoft JhengHei", "Segoe UI", sans-serif;
+    -fx-border-color: #6b4029 #3d2418 #2d1a12 #8b5a36;
+    -fx-border-width: 6px;
+}
+
+.archive-title {
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
+    -fx-font-size: 31px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #6f2f28;
+    -fx-effect: dropshadow(one-pass-box, rgba(255, 238, 195, 0.8), 1, 0, 1, 1);
+}
+
+.archive-subtitle {
+    -fx-font-family: "Georgia";
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-letter-spacing: 4px;
+    -fx-text-fill: #95613d;
+}
+
+.archive-ornament-line {
+    -fx-min-height: 1px;
+    -fx-max-height: 1px;
+    -fx-background-color: #9d7548;
+}
+
+.archive-ornament {
+    -fx-font-size: 16px;
+    -fx-text-fill: #7a3029;
+}
+
+.archive-scroll {
+    -fx-background-color: rgba(247, 232, 192, 0.42);
+    -fx-border-color: #a57d4d #d0b477 #8d673f #c4a46b;
+    -fx-border-width: 2px 1px 3px 1px;
+    -fx-padding: 4px;
+}
+
+.archive-scroll > .viewport,
+.archive-paper-content {
+    -fx-background-color: transparent;
+}
+
+.archive-content {
+    -fx-font-family: "Georgia", "Microsoft JhengHei";
+    -fx-font-size: 14px;
+    -fx-line-spacing: 4px;
+    -fx-text-fill: #4f392b;
+}
+
+.archive-scroll .scroll-bar:vertical {
+    -fx-background-color: rgba(116, 75, 43, 0.13);
+}
+
+.archive-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #a77946;
+    -fx-background-radius: 5px;
+}
+
+.archive-close-button {
+    -fx-min-width: 150px;
+    -fx-padding: 9px 20px;
+    -fx-font-family: "Microsoft JhengHei", "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #fff3d5;
+    -fx-background-color: linear-gradient(to bottom, #8e4937, #662d27);
+    -fx-background-radius: 4px;
+    -fx-border-color: #c58a5d #4f241e #3d1b18 #a96345;
+    -fx-border-width: 1px 2px 4px 2px;
+    -fx-border-radius: 4px;
+    -fx-cursor: hand;
+}
+
+.archive-close-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #a65a42, #77342b);
+}
+
+.archive-close-button:pressed {
+    -fx-translate-y: 1px;
+    -fx-border-width: 1px 2px 3px 2px;
+}

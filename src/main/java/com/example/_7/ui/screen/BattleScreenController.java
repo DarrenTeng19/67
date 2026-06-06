@@ -330,6 +330,7 @@ public class BattleScreenController {
         }
 
         timer.stop();
+        updateUI();
         lblBattleState.setText(enemyDead && !playerDead ? "戰鬥勝利" : "戰鬥失敗");
 
         PauseTransition delay = new PauseTransition(Duration.millis(650));
