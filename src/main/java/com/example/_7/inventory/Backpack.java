@@ -43,6 +43,12 @@ public class Backpack {
         return List.copyOf(placedItems);
     }
 
+    public int getOccupiedCellCount() {
+        return placedItems.stream()
+                .mapToInt(placedItem -> placedItem.getCurrentShape().occupiedCells().size())
+                .sum();
+    }
+
     public boolean tryPlaceItem(PlacedItem placedItem) {
         if (placedItem == null) {
             return false;
