@@ -75,6 +75,28 @@
     -fx-border-radius: 3px;
 }
 
+.guide-action-button {
+    -fx-min-width: 150px;
+    -fx-padding: 10px 18px;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #4a2c1b;
+    -fx-background-color: linear-gradient(to bottom, #f2dca7, #c99c58);
+    -fx-background-radius: 18px;
+    -fx-border-color: #f1d18b #704721 #573416 #c28f49;
+    -fx-border-width: 1px 1px 3px 1px;
+    -fx-border-radius: 18px;
+}
+
+.guide-action-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #ffe9b8, #ddb36c);
+}
+
+.guide-action-button:pressed {
+    -fx-translate-y: 1px;
+    -fx-border-width: 1px 1px 2px 1px;
+}
+
 .key-group {
     -fx-min-width: 58px;
 }

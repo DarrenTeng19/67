@@ -13,6 +13,7 @@ import com.example._7.inventory.Rotation;
 import com.example._7.inventory.Storage;
 import com.example._7.item.Item;
 import com.example._7.item.ItemCatalog;
+import com.example._7.recipe.Recipe;
 import com.example._7.recipe.RecipeCatalog;
 import com.example._7.recipe.RecipeResult;
 import com.example._7.recipe.RecipeService;
@@ -26,13 +27,19 @@ import com.example._7.ui.component.RecycleBinView;
 import com.example._7.ui.component.ShopPanel;
 import com.example._7.ui.component.StorageView;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class PreparationScreenController {
 
@@ -541,6 +548,64 @@ public class PreparationScreenController {
         } else {
             refreshUI();
         }
+    }
+
+    @FXML
+    private void onShowItems() {
+        ItemCatalog catalog = new ItemCatalog();
+        String content = catalog.getAllItems().stream()
+                .sorted(Comparator.comparing(Item::getAffinity).thenComparing(Item::getRarity))
+                .map(item -> String.format(
+                        "[%s] %s  |  $%d  |  稀有度 %d  |  %dx%d%n%s",
+                        item.getAffinity(),
+                        item.getName(),
+                        item.getPrice(),
+                        item.getRarity(),
+                        item.getShape().width(),
+                        item.getShape().height(),
+                        item.getDescription()
+                ))
+                .collect(Collectors.joining("\n\n"));
+
+        showScrollableInformation("道具一覽", content);
+    }
+
+    @FXML
+    private void onShowRecipes() {
+        ItemCatalog itemCatalog = new ItemCatalog();
+        String content = new RecipeCatalog().getAllRecipes().stream()
+                .map(recipe -> formatRecipe(recipe, itemCatalog))
+                .collect(Collectors.joining("\n"));
+
+        showScrollableInformation("合成配方", content);
+    }
+
+    private String formatRecipe(Recipe recipe, ItemCatalog catalog) {
+        return itemName(catalog, recipe.getIngredientAId())
+                + " + "
+                + itemName(catalog, recipe.getIngredientBId())
+                + "  →  "
+                + itemName(catalog, recipe.getResultItemId());
+    }
+
+    private String itemName(ItemCatalog catalog, String itemId) {
+        return catalog.findById(itemId)
+                .map(Item::getName)
+                .orElse(itemId);
+    }
+
+    private void showScrollableInformation(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(title);
+
+        TextArea textArea = new TextArea(content);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        textArea.setPrefSize(720, 480);
+        alert.getDialogPane().setContent(textArea);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.showAndWait();
     }
 
     @FXML
