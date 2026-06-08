@@ -38,28 +38,39 @@ public class EnemyFactory {
             place(backpack, "small_round_shield", 0, 2);
             place(backpack, "hammer", 2, 0);
             place(backpack, "banana", 2, 2);
+            place(backpack, "energy_drink", 2, 3);
         } else if (round == 2) {
             place(backpack, "iron_sword", 0, 0);
             place(backpack, "steel_shield", 0, 2);
             place(backpack, "hammer", 2, 0);
             place(backpack, "banana", 2, 2);
+            place(backpack, "wooden_sword", 0, 4);
+            place(backpack, "energy_drink", 2, 4);
         } else if (round == 3) {
             place(backpack, "big_hammer", 0, 0);
             place(backpack, "adaptive_helmet", 0, 2);
             place(backpack, "himmel_note", 2, 0);
             place(backpack, "banana", 2, 2);
+            place(backpack, "energy_drink", 2, 3);
+            place(backpack, "iron_sword", 0, 4);
+            place(backpack, "iron_sword", 0, 1);
         } else if (round == 4) {
             place(backpack, "hero_himmel_greatsword", 0, 0);
             place(backpack, "thorn_armor", 0, 2);
             place(backpack, "himmel_note", 3, 0);
             place(backpack, "banana", 3, 2);
+            place(backpack, "iron_sword", 3, 1);
+            place(backpack, "energy_drink", 3, 3);
+            place(backpack, "iron_sword", 0, 4);
         } else {
             place(backpack, "hero_himmel_greatsword", 0, 0);
-            place(backpack, "thorn_armor", 0, 1);
-            place(backpack, "banana", 0, 3);
-            place(backpack, "energy_drink", 2, 3);
+            place(backpack, "hero_himmel_greatsword", 0, 1);
+            place(backpack, "thorn_armor", 0, 2);
+            place(backpack, "banana", 0, 4);
+            place(backpack, "energy_drink", 2, 4);
             place(backpack, "himmel_note", 3, 0);
             place(backpack, "thorn_spread", 3, 1);
+            place(backpack, "big_hammer", 3, 2);
         }
     }
 

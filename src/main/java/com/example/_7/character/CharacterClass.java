@@ -20,11 +20,11 @@ public enum CharacterClass {
     ),
     MAGE(
             "魔法師",
-            85,
+            95,
             5,
             1.0,
             15,
-            2.2
+            3.0
     );
 
     private final String displayName;

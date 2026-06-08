@@ -10,6 +10,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EffectiveStatsCalculatorTest {
     @Test
+    void mageStartsWithThreeManaRecoveryPerSecond() {
+        CharacterStats stats = CharacterClass.MAGE.createInitialStats();
+
+        assertEquals(95, stats.getMaxHp());
+        assertEquals(3.0, stats.getManaRecoveryRate());
+    }
+
+    @Test
     void includesBackpackItemStatBonuses() {
         CharacterStats baseStats = CharacterClass.WARRIOR.createInitialStats();
         var shield = new ItemCatalog().getById("small_round_shield");

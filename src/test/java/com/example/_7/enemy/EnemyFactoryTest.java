@@ -15,7 +15,7 @@ class EnemyFactoryTest {
 
     @Test
     void fixedLoadoutsBecomeStrongerEveryRound() {
-        int[] expectedValues = {12, 22, 34, 49, 64};
+        int[] expectedValues = {15, 27, 51, 66, 92};
         int previousValue = 0;
 
         for (int round = 1; round <= 5; round++) {
@@ -35,17 +35,19 @@ class EnemyFactoryTest {
         assertEquals(
                 List.of(
                         "hero_himmel_greatsword",
+                        "hero_himmel_greatsword",
                         "thorn_armor",
                         "banana",
                         "energy_drink",
                         "himmel_note",
-                        "thorn_spread"
+                        "thorn_spread",
+                        "big_hammer"
                 ),
                 enemy.getBackpack().getBattleItems().stream()
                         .map(Item::getId)
                         .toList()
         );
-        assertEquals(6, enemy.getBackpack().getPlacedItems().size());
+        assertEquals(8, enemy.getBackpack().getPlacedItems().size());
     }
 
     private int loadoutValue(Enemy enemy) {
