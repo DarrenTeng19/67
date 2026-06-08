@@ -6,6 +6,7 @@ import com.example._7.battle.BattleEvent;
 import com.example._7.battle.BattleState;
 import com.example._7.character.CharacterClass;
 import com.example._7.character.Combatant;
+import com.example._7.character.Enemy;
 import com.example._7.character.Player;
 import com.example._7.game.GamePhase;
 import com.example._7.game.GameSession;
@@ -96,14 +97,15 @@ public class BattleScreenController {
         this.app = app;
 
         Player player = session.getPlayer();
+        Enemy enemy = session.getCurrentEnemy();
         lblRound.setText("ROUND " + session.getCurrentRound() + " / 5");
         lblPlayerName.setText(player.getName());
         lblPlayerClass.setText(classDisplayName(player.getCharacterClass()));
-        lblEnemyName.setText("Enemy");
-        lblEnemyClass.setText("戰士");
+        lblEnemyName.setText("敵人");
+        lblEnemyClass.setText(classDisplayName(enemy.getCharacterClass()));
 
         playerPortrait.setImage(loadCharacterImage(fileNameFor(player.getCharacterClass())));
-        enemyPortrait.setImage(loadCharacterImage("warrior.png"));
+        enemyPortrait.setImage(loadCharacterImage(fileNameFor(enemy.getCharacterClass())));
 
         previousPlayerTotal = totalDurability(player);
         previousEnemyTotal = totalDurability(session.getCurrentEnemy());

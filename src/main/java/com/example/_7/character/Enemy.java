@@ -5,6 +5,7 @@ import com.example._7.inventory.Backpack;
 
 public class Enemy implements Combatant {
     private final String name;
+    private final CharacterClass characterClass;
 
     // 對手最大數值跟對戰當前數值
     private final CharacterStats characterStats;
@@ -19,7 +20,18 @@ public class Enemy implements Combatant {
             BattleState battleState,
             Backpack backpack
     ) {
+        this(name, CharacterClass.WARRIOR, characterStats, battleState, backpack);
+    }
+
+    public Enemy(
+            String name,
+            CharacterClass characterClass,
+            CharacterStats characterStats,
+            BattleState battleState,
+            Backpack backpack
+    ) {
         this.name = name;
+        this.characterClass = characterClass;
         this.characterStats = characterStats;
         this.battleState = battleState;
         this.backpack = backpack;
@@ -28,6 +40,10 @@ public class Enemy implements Combatant {
     @Override
     public String getName() {
         return name;
+    }
+
+    public CharacterClass getCharacterClass() {
+        return characterClass;
     }
 
     @Override
