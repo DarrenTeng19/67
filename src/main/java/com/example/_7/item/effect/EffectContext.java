@@ -163,7 +163,11 @@ public class EffectContext {
     }
 
     public void addShieldToOwner(int amount) {
-        owner.getBattleState().addShield(amount);
+        int maxShield = Math.max(
+                1,
+                (int) Math.floor(getEffectiveMaxHp(owner) * EffectRules.SHIELD_MAX_HP_RATIO)
+        );
+        owner.getBattleState().addShield(amount, maxShield);
     }
 
     public void recoverOwnerStamina(int amount) {

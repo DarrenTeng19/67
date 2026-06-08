@@ -35,32 +35,39 @@ public class EnemyFactory {
 
         if (round <= 1) {
             place(backpack, "wooden_sword", 0, 0);
-            place(backpack, "banana", 0, 2);
+            place(backpack, "small_round_shield", 0, 2);
+            place(backpack, "hammer", 2, 0);
+            place(backpack, "banana", 2, 2);
         } else if (round == 2) {
-            place(backpack, "wooden_sword", 0, 0);
-            place(backpack, "small_round_shield", 0, 2);
+            place(backpack, "iron_sword", 0, 0);
+            place(backpack, "steel_shield", 0, 2);
+            place(backpack, "hammer", 2, 0);
+            place(backpack, "banana", 2, 2);
         } else if (round == 3) {
-            place(backpack, "iron_sword", 0, 0);
-            place(backpack, "small_round_shield", 0, 2);
-            place(backpack, "banana", 3, 0);
+            place(backpack, "big_hammer", 0, 0);
+            place(backpack, "adaptive_helmet", 0, 2);
+            place(backpack, "himmel_note", 2, 0);
+            place(backpack, "banana", 2, 2);
         } else if (round == 4) {
-            place(backpack, "iron_sword", 0, 0);
-            place(backpack, "steel_shield", 0, 2);
-            place(backpack, "hammer", 3, 0);
+            place(backpack, "hero_himmel_greatsword", 0, 0);
+            place(backpack, "thorn_armor", 0, 2);
+            place(backpack, "himmel_note", 3, 0);
+            place(backpack, "banana", 3, 2);
         } else {
-            place(backpack, "iron_sword", 0, 0);
-            place(backpack, "steel_shield", 0, 2);
-            place(backpack, "big_hammer", 2, 0);
-            place(backpack, "magic_stone", 3, 3);
+            place(backpack, "hero_himmel_greatsword", 0, 0);
+            place(backpack, "thorn_armor", 0, 1);
+            place(backpack, "banana", 0, 3);
+            place(backpack, "energy_drink", 2, 3);
+            place(backpack, "himmel_note", 3, 0);
+            place(backpack, "thorn_spread", 3, 1);
         }
     }
 
     private void place(Backpack backpack, String itemId, int row, int col) {
-        try {
-            Item item = itemCatalog.getById(itemId);
-            backpack.tryPlaceItem(new PlacedItem(item, new GridPosition(row, col)));
-        } catch (Exception ignored) {
-            // 道具 id 不存在或位置放不下時，先略過，避免敵人生成失敗。
+        Item item = itemCatalog.getById(itemId);
+        boolean placed = backpack.tryPlaceItem(new PlacedItem(item, new GridPosition(row, col)));
+        if (!placed) {
+            throw new IllegalStateException("Invalid enemy loadout placement for item: " + itemId);
         }
     }
 }
