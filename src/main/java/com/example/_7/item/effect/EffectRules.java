@@ -36,6 +36,7 @@ public final class EffectRules {
     public static final double PRECISION_MAX_BONUS = 0.40;
 
     public static final int THORNS_DAMAGE_PER_LAYER = 2;
+    public static final double SHIELD_MAX_HP_RATIO = 0.25;
 
     // 負面效果規則
     public static final int POISON_DAMAGE_PER_LAYER = 1;

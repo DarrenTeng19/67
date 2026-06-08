@@ -136,6 +136,11 @@ public class BattleState {
         currentShield += amount;
     }
 
+    public void addShield(int amount, int maxShield) {
+        if (amount <= 0 || maxShield <= 0) return;
+        currentShield = Math.min(maxShield, currentShield + amount);
+    }
+
     public void recoverStamina(int amount, int maxStamina) {
         if (amount <= 0) return;
         currentStamina = Math.min(maxStamina, currentStamina + amount);

@@ -302,7 +302,7 @@ public class ItemCatalog {
                 0.85,
                 2,
                 0,
-                List.of(new DamageEffect(7))
+                List.of(new DamageEffect(4))
         );
     }
 
@@ -321,7 +321,7 @@ public class ItemCatalog {
                 1.00,
                 2,
                 0,
-                List.of(new AddMaxHpEffect(12), new ShieldEffect(8))
+                List.of(new AddMaxHpEffect(10), new ShieldEffect(4))
         );
     }
 
@@ -340,7 +340,7 @@ public class ItemCatalog {
                 0.65,
                 4,
                 0,
-                List.of(new DamageEffect(11))
+                List.of(new DamageEffect(7))
         );
     }
 
@@ -359,7 +359,7 @@ public class ItemCatalog {
                 1.00,
                 3,
                 0,
-                List.of(new AddMaxHpEffect(20), new AddStaminaRecoveryEffect(1.0), new ShieldEffect(12))
+                List.of(new AddMaxHpEffect(16), new AddStaminaRecoveryEffect(1.0), new ShieldEffect(10))
         );
     }
 
@@ -378,7 +378,7 @@ public class ItemCatalog {
                 1.00,
                 2,
                 0,
-                List.of(new AddMaxHpEffect(12), new AddMaxStaminaEffect(3), new ShieldEffect(9))
+                List.of(new AddMaxHpEffect(10), new AddMaxStaminaEffect(2), new ShieldEffect(8))
         );
     }
 
@@ -397,7 +397,7 @@ public class ItemCatalog {
                 1.00,
                 2,
                 0,
-                List.of(new ShieldEffect(10))
+                List.of(new ShieldEffect(8))
         );
     }
 
@@ -416,7 +416,7 @@ public class ItemCatalog {
                 1.00,
                 3,
                 0,
-                List.of(new AddMaxStaminaEffect(5), new AddStaminaRecoveryEffect(1.0), new AddBuffEffect("吸血", 1))
+                List.of(new AddMaxStaminaEffect(4), new AddStaminaRecoveryEffect(1.0), new AddBuffEffect("吸血", 1))
         );
     }
 
@@ -435,7 +435,7 @@ public class ItemCatalog {
                 1.00,
                 3,
                 0,
-                List.of(new AddMaxHpEffect(20), new AddBuffEffect("尖刺", 1))
+                List.of(new AddMaxHpEffect(16), new AddBuffEffect("尖刺", 1))
         );
     }
 
@@ -929,7 +929,7 @@ public class ItemCatalog {
                 0.88,
                 4,
                 0,
-                List.of(new DamageEffect(11))
+                List.of(new DamageEffect(7))
         );
     }
 
@@ -948,7 +948,7 @@ public class ItemCatalog {
                 1.00,
                 3,
                 0,
-                List.of(new AddMaxHpEffect(15), new ShieldEffect(12))
+                List.of(new AddMaxHpEffect(12), new ShieldEffect(10))
         );
     }
 
@@ -967,7 +967,7 @@ public class ItemCatalog {
                 0.70,
                 6,
                 0,
-                List.of(new DamageEffect(25))
+                List.of(new DamageEffect(15))
         );
     }
 
@@ -986,7 +986,7 @@ public class ItemCatalog {
                 1.00,
                 6,
                 0,
-                List.of(new AddMaxHpEffect(20), new AddMaxStaminaEffect(5), new ShieldEffect(12))
+                List.of(new AddMaxHpEffect(16), new AddMaxStaminaEffect(4), new ShieldEffect(10))
         );
     }
 
@@ -1005,7 +1005,7 @@ public class ItemCatalog {
                 1.00,
                 2,
                 0,
-                List.of(new AddMaxHpEffect(35), new AddStaminaRecoveryEffect(1.5), new ShieldEffect(20), new AddBuffEffect("尖刺", 1))
+                List.of(new AddMaxHpEffect(30), new AddStaminaRecoveryEffect(1.5), new ShieldEffect(17), new AddBuffEffect("尖刺", 1))
         );
     }
 
@@ -1024,7 +1024,7 @@ public class ItemCatalog {
                 0.85,
                 5,
                 0,
-                List.of(new AddMaxStaminaEffect(5), new AddStaminaRecoveryEffect(1.0), new DamageEffect(20), new AddBuffEffect("吸血", 1))
+                List.of(new AddMaxStaminaEffect(4), new AddStaminaRecoveryEffect(1.0), new DamageEffect(12), new AddBuffEffect("吸血", 1))
         );
     }
 
